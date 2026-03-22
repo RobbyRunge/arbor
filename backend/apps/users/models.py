@@ -4,16 +4,16 @@ from django.db import models
 
 class UserManager(BaseUserManager):
     """
-    Ersetzt Djangos Standard-UserManager.
-    Nötig weil wir email statt username als Pflichtfeld nutzen.
+    Replaces Django's default UserManager.
+    Required because we use email instead of username as the login field.
     """
 
     def create_user(self, email, password=None, **extra_fields):
         if not email:
-            raise ValueError("E-Mail-Adresse ist erforderlich.")
+            raise ValueError("An email address is required.")
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
-        user.set_password(password)  # speichert den Hash, nie das Klartext-PW
+        user.set_password(password)  # stores the hash, never the plaintext password
         user.save(using=self._db)
         return user
 
@@ -27,11 +27,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     """
     Custom User Model.
 
-    AbstractBaseUser: gibt uns password-Handling, last_login, is_active —
-    aber kein username-Feld. Wir definieren selbst was das "Identifikationsfeld" ist.
+    AbstractBaseUser: provides password handling, last_login, is_active —
+    but no username field. We define the identification field ourselves.
 
-    PermissionsMixin: fügt is_superuser, groups, user_permissions hinzu —
-    nötig für Djangos Admin und Permissions-System.
+    PermissionsMixin: adds is_superuser, groups, user_permissions —
+    required for Django's admin and permissions system.
     """
 
     email = models.EmailField(unique=True)
@@ -43,14 +43,14 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
-    # Sagt Django: nutze email als Login-Feld (statt username)
+    # Tells Django to use email as the login field (instead of username)
     USERNAME_FIELD = "email"
-    # Felder die bei "createsuperuser" abgefragt werden (außer email + password)
+    # Fields prompted by "createsuperuser" (besides email and password)
     REQUIRED_FIELDS = ["first_name", "last_name"]
 
     class Meta:
-        verbose_name = "Benutzer"
-        verbose_name_plural = "Benutzer"
+        verbose_name = "User"
+        verbose_name_plural = "Users"
         ordering = ["-date_joined"]
 
     def __str__(self):

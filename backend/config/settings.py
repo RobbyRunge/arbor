@@ -40,7 +40,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "corsheaders.middleware.CorsMiddleware",  # muss vor CommonMiddleware stehen
+    "corsheaders.middleware.CorsMiddleware",  # must be placed before CommonMiddleware
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -70,14 +70,14 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 
 # ─── Custom User Model ────────────────────────────────────────────────────────
-# Sagt Django: nutze unsere eigene User-Klasse statt der Standard-Django-User.
-# WICHTIG: muss gesetzt sein bevor die erste Migration läuft.
+# Tells Django to use our own User class instead of the built-in one.
+# IMPORTANT: must be set before the first migration runs.
 
 AUTH_USER_MODEL = "users.User"
 
 
 # ─── Database ─────────────────────────────────────────────────────────────────
-# PostgreSQL. Zugangsdaten kommen aus .env, nie aus dem Code.
+# PostgreSQL. Credentials come from .env, never from code.
 
 DATABASES = {
     "default": {
@@ -118,8 +118,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 # ─── Django REST Framework ────────────────────────────────────────────────────
-# Alle API-Endpunkte verlangen standardmäßig ein gültiges JWT.
-# Ausnahmen (Login, Register) werden in den Views explizit freigegeben.
+# All API endpoints require a valid JWT by default.
+# Exceptions (login, register) are explicitly opened up in their views.
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -132,23 +132,22 @@ REST_FRAMEWORK = {
 
 
 # ─── JWT (SimpleJWT) ──────────────────────────────────────────────────────────
-# Access Token: kurzlebig (15 Min) → wenn abgefangen, schnell wertlos
-# Refresh Token: länger (7 Tage) → wird genutzt um neuen Access Token zu holen
+# Access Token: short-lived (15 min) → quickly worthless if intercepted
+# Refresh Token: longer-lived (7 days) → used to obtain a new access token
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
-    "ROTATE_REFRESH_TOKENS": True,       # neuer Refresh Token bei jedem Refresh
-    "BLACKLIST_AFTER_ROTATION": False,   # kein Blacklist-Modul nötig vorerst
+    "ROTATE_REFRESH_TOKENS": True,       # issue a new refresh token on every refresh
+    "BLACKLIST_AFTER_ROTATION": False,   # no blacklist module needed for now
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
 
 # ─── CORS ─────────────────────────────────────────────────────────────────────
-# CORS = Cross-Origin Resource Sharing.
-# Ohne diese Einstellung würde der Browser alle Requests vom React-Frontend
-# (localhost:5173) blockieren, weil Backend (localhost:8000) und Frontend
-# auf verschiedenen Ports laufen → gelten als verschiedene "Origins".
+# Without this, the browser blocks all requests from the React frontend
+# (localhost:5173) because backend (localhost:8000) and frontend run on
+# different ports — treated as different origins.
 
 CORS_ALLOWED_ORIGINS = os.getenv(
     "CORS_ALLOWED_ORIGINS",
@@ -157,7 +156,7 @@ CORS_ALLOWED_ORIGINS = os.getenv(
 
 
 # ─── Email ────────────────────────────────────────────────────────────────────
-# Für Passwort-Reset. Im Development landen Mails in der Konsole.
+# Used for password reset. In development, emails are printed to the console.
 
 EMAIL_BACKEND = os.getenv(
     "EMAIL_BACKEND",
@@ -172,8 +171,8 @@ DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "noreply@arbor.app")
 
 
 # ─── Celery ───────────────────────────────────────────────────────────────────
-# Celery verarbeitet Hintergrundaufgaben (z.B. PDF-Export, CSV-Import).
-# Redis dient als "Broker" — die Warteschlange zwischen Django und Celery.
+# Celery handles background tasks (e.g. PDF export, CSV import).
+# Redis acts as the broker — the queue between Django and Celery workers.
 
 CELERY_BROKER_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 CELERY_RESULT_BACKEND = os.getenv("REDIS_URL", "redis://localhost:6379/0")
