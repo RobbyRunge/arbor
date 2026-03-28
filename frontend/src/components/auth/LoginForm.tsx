@@ -1,6 +1,9 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { loginUser } from "../../api/auth";
 
 const schema = z.object({
   email: z.string().email("Invalid email"),
@@ -10,6 +13,10 @@ const schema = z.object({
 type LoginData = z.infer<typeof schema>;
 
 function LoginForm() {
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
+
   const {
     register,
     handleSubmit,
@@ -18,8 +25,20 @@ function LoginForm() {
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data: LoginData) => {
+    setIsLoading(true);
+    setServerError(null);
+
+    try {
+      const { access, refresh } = await loginUser(data.email, data.password);
+      localStorage.setItem("access_token", access);
+      localStorage.setItem("refresh_token", refresh);
+      navigate("/");
+    } catch {
+      setServerError("Invalid email or password.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -51,21 +70,24 @@ function LoginForm() {
         )}
       </div>
 
-      {/* "Forgot password?" — nach dem Password-Block, vor dem Button */}
       <div className="text-right mb-6">
         <a href="" className="text-sm text-teal-600 hover:underline">
           Forgot password?
         </a>
       </div>
 
+      {serverError && (
+        <p className="text-red-500 text-sm mb-4">{serverError}</p>
+      )}
+
       <button
         type="submit"
-        className="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2 rounded-lg transition-colors"
+        disabled={isLoading}
+        className="w-full bg-teal-600 hover:bg-teal-700 disabled:opacity-60 text-white font-semibold py-2 rounded-lg transition-colors"
       >
-        Log in
+        {isLoading ? "Logging in..." : "Log in"}
       </button>
 
-      {/* "Register" — nach dem Button */}
       <p className="text-center text-sm text-gray-500 mt-4">
         Don't have an account?{" "}
         <a href="" className="text-teal-600 hover:underline font-medium">
