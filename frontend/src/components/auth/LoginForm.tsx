@@ -12,7 +12,7 @@ const schema = z.object({
 
 type LoginData = z.infer<typeof schema>;
 
-function LoginForm() {
+function LoginForm({ onSwitch }: { onSwitch: () => void }) {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
@@ -42,16 +42,16 @@ function LoginForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-sm">
+    <form onSubmit={handleSubmit(onSubmit)} className="w-[300px]">
       <h2 className="text-2xl font-bold text-gray-800">Welcome back</h2>
-      <p className="text-gray-500 mt-1 mb-8">Log in to your account</p>
+      <p className="text-gray-500 mt-1 mb-6">Log in to your account</p>
 
       <div className="flex flex-col gap-1 mb-4">
         <label className="text-sm font-medium text-gray-700">Email</label>
         <input
           {...register("email")}
           type="email"
-          className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+          className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 w-full"
         />
         {errors.email && (
           <p className="text-red-500 text-sm">{errors.email.message}</p>
@@ -63,7 +63,7 @@ function LoginForm() {
         <input
           {...register("password")}
           type="password"
-          className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+          className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 w-full"
         />
         {errors.password && (
           <p className="text-red-500 text-sm">{errors.password.message}</p>
@@ -90,9 +90,13 @@ function LoginForm() {
 
       <p className="text-center text-sm text-gray-500 mt-4">
         Don't have an account?{" "}
-        <a href="" className="text-teal-600 hover:underline font-medium">
+        <button
+          type="button"
+          onClick={onSwitch}
+          className="text-teal-600 hover:underline font-medium"
+        >
           Register
-        </a>
+        </button>
       </p>
     </form>
   );
