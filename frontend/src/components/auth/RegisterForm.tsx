@@ -57,7 +57,9 @@ function RegisterForm({ onSwitch }: { onSwitch: () => void }) {
 
       <div className="flex gap-3 mb-4">
         <div className="flex flex-col gap-1 min-w-0 flex-1">
-          <label className="text-sm font-medium text-gray-700">First name</label>
+          <label className="text-sm font-medium text-gray-700">
+            First name
+          </label>
           <input
             {...register("first_name")}
             type="text"
