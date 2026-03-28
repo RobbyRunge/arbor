@@ -28,6 +28,7 @@ function RegisterForm({ onSwitch }: { onSwitch: () => void }) {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<RegisterData>({
     resolver: zodResolver(schema),
@@ -43,8 +44,22 @@ function RegisterForm({ onSwitch }: { onSwitch: () => void }) {
       localStorage.setItem("access_token", access);
       localStorage.setItem("refresh_token", refresh);
       navigate("/");
-    } catch {
-      setServerError("Registration failed. This email may already be in use.");
+    } catch (err: any) {
+      const fieldErrors = err?.response?.data;
+      if (fieldErrors && typeof fieldErrors === "object") {
+        (
+          ["first_name", "last_name", "password", "password_confirm"] as const
+        ).forEach((field) => {
+          if (fieldErrors[field]) {
+            setError(field, { message: fieldErrors[field][0] });
+          }
+        });
+        if (fieldErrors.email || fieldErrors.non_field_errors) {
+          setServerError("Something went wrong. Please check your details.");
+        }
+      } else {
+        setServerError("Something went wrong. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }
