@@ -48,27 +48,27 @@ function AuthPage() {
         >
           <Leaf size={48} className="text-white" />
           <h1 className="text-4xl font-bold text-white mt-4">Arbor</h1>
-          <p className="text-white/70 mt-2">Your finances, simplified</p>
+          <p className="text-white/70 mt-2">Deine Finanzen, einfach verwaltet</p>
           <div className="flex flex-col gap-6 mt-12">
             <div className="flex items-center gap-3 text-white">
               <LayoutDashboard size={20} />
               <div className="text-left">
-                <p className="font-semibold">Track your spending</p>
-                <p className="text-sm text-white/60">See where your money goes</p>
+                <p className="font-semibold">Ausgaben verfolgen</p>
+                <p className="text-sm text-white/60">Sieh, wohin dein Geld fließt</p>
               </div>
             </div>
             <div className="flex items-center gap-3 text-white">
               <PiggyBank size={20} />
               <div className="text-left">
-                <p className="font-semibold">Manage budgets</p>
-                <p className="text-sm text-white/60">Stay on top of your limits</p>
+                <p className="font-semibold">Budgets verwalten</p>
+                <p className="text-sm text-white/60">Behalte deine Limits im Blick</p>
               </div>
             </div>
             <div className="flex items-center gap-3 text-white">
               <FileDown size={20} />
               <div className="text-left">
-                <p className="font-semibold">Export reports</p>
-                <p className="text-sm text-white/60">PDF & CSV at any time</p>
+                <p className="font-semibold">Berichte exportieren</p>
+                <p className="text-sm text-white/60">PDF & CSV jederzeit</p>
               </div>
             </div>
           </div>

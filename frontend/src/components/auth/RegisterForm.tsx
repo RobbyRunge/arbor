@@ -7,14 +7,14 @@ import { registerUser, loginUser } from "../../api/auth";
 
 const schema = z
   .object({
-    first_name: z.string().min(1, "Required"),
-    last_name: z.string().min(1, "Required"),
-    email: z.string().email("Invalid email"),
-    password: z.string().min(8, "Min. 8 characters"),
+    first_name: z.string().min(1, "Pflichtfeld"),
+    last_name: z.string().min(1, "Pflichtfeld"),
+    email: z.string().email("Ungültige E-Mail"),
+    password: z.string().min(8, "Min. 8 Zeichen"),
     password_confirm: z.string(),
   })
   .refine((data) => data.password === data.password_confirm, {
-    message: "Passwords do not match",
+    message: "Passwörter stimmen nicht überein",
     path: ["password_confirm"],
   });
 
@@ -55,10 +55,10 @@ function RegisterForm({ onSwitch }: { onSwitch: () => void }) {
           }
         });
         if (fieldErrors.email || fieldErrors.non_field_errors) {
-          setServerError("Something went wrong. Please check your details.");
+          setServerError("Etwas ist schiefgelaufen. Bitte überprüfe deine Angaben.");
         }
       } else {
-        setServerError("Something went wrong. Please try again.");
+        setServerError("Etwas ist schiefgelaufen. Bitte versuche es erneut.");
       }
     } finally {
       setIsLoading(false);
@@ -67,14 +67,12 @@ function RegisterForm({ onSwitch }: { onSwitch: () => void }) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="w-[300px]">
-      <h2 className="text-2xl font-bold text-gray-800">Create account</h2>
-      <p className="text-gray-500 mt-1 mb-6">Start managing your finances</p>
+      <h2 className="text-2xl font-bold text-gray-800">Konto erstellen</h2>
+      <p className="text-gray-500 mt-1 mb-6">Starte mit deiner Finanzverwaltung</p>
 
       <div className="flex gap-3 mb-4">
         <div className="flex flex-col gap-1 min-w-0 flex-1">
-          <label className="text-sm font-medium text-gray-700">
-            First name
-          </label>
+          <label className="text-sm font-medium text-gray-700">Vorname</label>
           <input
             {...register("first_name")}
             type="text"
@@ -85,7 +83,7 @@ function RegisterForm({ onSwitch }: { onSwitch: () => void }) {
           )}
         </div>
         <div className="flex flex-col gap-1 min-w-0 flex-1">
-          <label className="text-sm font-medium text-gray-700">Last name</label>
+          <label className="text-sm font-medium text-gray-700">Nachname</label>
           <input
             {...register("last_name")}
             type="text"
@@ -98,7 +96,7 @@ function RegisterForm({ onSwitch }: { onSwitch: () => void }) {
       </div>
 
       <div className="flex flex-col gap-1 mb-4">
-        <label className="text-sm font-medium text-gray-700">Email</label>
+        <label className="text-sm font-medium text-gray-700">E-Mail</label>
         <input
           {...register("email")}
           type="email"
@@ -110,7 +108,7 @@ function RegisterForm({ onSwitch }: { onSwitch: () => void }) {
       </div>
 
       <div className="flex flex-col gap-1 mb-4">
-        <label className="text-sm font-medium text-gray-700">Password</label>
+        <label className="text-sm font-medium text-gray-700">Passwort</label>
         <input
           {...register("password")}
           type="password"
@@ -122,18 +120,14 @@ function RegisterForm({ onSwitch }: { onSwitch: () => void }) {
       </div>
 
       <div className="flex flex-col gap-1 mb-6">
-        <label className="text-sm font-medium text-gray-700">
-          Confirm password
-        </label>
+        <label className="text-sm font-medium text-gray-700">Passwort bestätigen</label>
         <input
           {...register("password_confirm")}
           type="password"
           className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 w-full"
         />
         {errors.password_confirm && (
-          <p className="text-red-500 text-sm">
-            {errors.password_confirm.message}
-          </p>
+          <p className="text-red-500 text-sm">{errors.password_confirm.message}</p>
         )}
       </div>
 
@@ -146,17 +140,17 @@ function RegisterForm({ onSwitch }: { onSwitch: () => void }) {
         disabled={isLoading}
         className="w-full bg-teal-600 hover:bg-teal-700 disabled:opacity-60 text-white font-semibold py-2 rounded-lg transition-colors"
       >
-        {isLoading ? "Creating account..." : "Create account"}
+        {isLoading ? "Wird erstellt..." : "Konto erstellen"}
       </button>
 
       <p className="text-center text-sm text-gray-500 mt-4">
-        Already have an account?{" "}
+        Bereits ein Konto?{" "}
         <button
           type="button"
           onClick={onSwitch}
           className="text-teal-600 hover:underline font-medium"
         >
-          Log in
+          Anmelden
         </button>
       </p>
     </form>
