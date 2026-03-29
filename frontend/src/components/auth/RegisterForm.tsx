@@ -40,9 +40,7 @@ function RegisterForm({ onSwitch }: { onSwitch: () => void }) {
 
     try {
       await registerUser(data);
-      const { access, refresh } = await loginUser(data.email, data.password);
-      localStorage.setItem("access_token", access);
-      localStorage.setItem("refresh_token", refresh);
+      await loginUser(data.email, data.password);
       navigate("/");
     } catch (err: any) {
       const fieldErrors = err?.response?.data;
@@ -55,7 +53,9 @@ function RegisterForm({ onSwitch }: { onSwitch: () => void }) {
           }
         });
         if (fieldErrors.email || fieldErrors.non_field_errors) {
-          setServerError("Etwas ist schiefgelaufen. Bitte überprüfe deine Angaben.");
+          setServerError(
+            "Etwas ist schiefgelaufen. Bitte überprüfe deine Angaben.",
+          );
         }
       } else {
         setServerError("Etwas ist schiefgelaufen. Bitte versuche es erneut.");
@@ -68,7 +68,9 @@ function RegisterForm({ onSwitch }: { onSwitch: () => void }) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="w-[300px]">
       <h2 className="text-2xl font-bold text-gray-800">Konto erstellen</h2>
-      <p className="text-gray-500 mt-1 mb-6">Starte mit deiner Finanzverwaltung</p>
+      <p className="text-gray-500 mt-1 mb-6">
+        Starte mit deiner Finanzverwaltung
+      </p>
 
       <div className="flex gap-3 mb-4">
         <div className="flex flex-col gap-1 min-w-0 flex-1">
@@ -120,14 +122,18 @@ function RegisterForm({ onSwitch }: { onSwitch: () => void }) {
       </div>
 
       <div className="flex flex-col gap-1 mb-6">
-        <label className="text-sm font-medium text-gray-700">Passwort bestätigen</label>
+        <label className="text-sm font-medium text-gray-700">
+          Passwort bestätigen
+        </label>
         <input
           {...register("password_confirm")}
           type="password"
           className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 w-full"
         />
         {errors.password_confirm && (
-          <p className="text-red-500 text-sm">{errors.password_confirm.message}</p>
+          <p className="text-red-500 text-sm">
+            {errors.password_confirm.message}
+          </p>
         )}
       </div>
 

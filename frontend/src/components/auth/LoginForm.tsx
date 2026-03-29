@@ -36,9 +36,7 @@ function LoginForm({
     setServerError(null);
 
     try {
-      const { access, refresh } = await loginUser(data.email, data.password);
-      localStorage.setItem("access_token", access);
-      localStorage.setItem("refresh_token", refresh);
+      await loginUser(data.email, data.password);
       navigate("/");
     } catch {
       setServerError("E-Mail oder Passwort ungültig.");
