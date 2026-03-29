@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AuthPage from "./pages/AuthPage";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import AppLayout from "./components/layout/AppLayout";
+import DashboardPage from "./pages/DashboardPage";
 
 function App() {
   return (
@@ -10,7 +11,7 @@ function App() {
       <Routes>
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
-            <Route path="/" element={<h1>Dashboard</h1>} />
+            <Route path="/" element={<DashboardPage />} />
           </Route>
         </Route>
         <Route path="/login" element={<AuthPage />} />
