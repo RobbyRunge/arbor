@@ -12,7 +12,13 @@ const schema = z.object({
 
 type LoginData = z.infer<typeof schema>;
 
-function LoginForm({ onSwitch }: { onSwitch: () => void }) {
+function LoginForm({
+  onSwitch,
+  onForgotPassword,
+}: {
+  onSwitch: () => void;
+  onForgotPassword: () => void;
+}) {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
@@ -71,9 +77,13 @@ function LoginForm({ onSwitch }: { onSwitch: () => void }) {
       </div>
 
       <div className="text-right mb-6">
-        <a href="" className="text-sm text-teal-600 hover:underline">
+        <button
+          type="button"
+          onClick={onForgotPassword}
+          className="text-sm text-teal-600 hover:underline"
+        >
           Passwort vergessen?
-        </a>
+        </button>
       </div>
 
       {serverError && (

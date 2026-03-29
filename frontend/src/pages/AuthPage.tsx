@@ -5,6 +5,9 @@ import { Leaf, LayoutDashboard, PiggyBank, FileDown } from "lucide-react";
 
 import LoginForm from "../components/auth/LoginForm";
 import RegisterForm from "../components/auth/RegisterForm";
+import ForgotPasswordForm from "../components/auth/ForgotPasswordForm";
+
+type AuthMode = "login" | "register" | "forgot-password";
 
 function useIsDesktop() {
   const [isDesktop, setIsDesktop] = useState(
@@ -25,17 +28,31 @@ const formVariants = {
   exit: (dir: number) => ({ x: dir * -40, opacity: 0 }),
 };
 
+const cardHeight: Record<AuthMode, number> = {
+  login: 580,
+  register: 680,
+  "forgot-password": 460,
+};
+
 function AuthPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const isLogin = location.pathname === "/login";
   const isDesktop = useIsDesktop();
   const [direction, setDirection] = useState(0);
 
-  const switchTo = (mode: "login" | "register") => {
-    setDirection(mode === "register" ? 1 : -1);
-    navigate(`/${mode}`);
+  const mode: AuthMode =
+    location.pathname === "/register"
+      ? "register"
+      : location.pathname === "/forgot-password"
+        ? "forgot-password"
+        : "login";
+
+  const switchTo = (next: AuthMode) => {
+    setDirection(next === "login" ? -1 : 1);
+    navigate(`/${next}`);
   };
+
+  const brandingOnRight = mode === "register";
 
   return (
     <div className="relative flex items-center justify-center min-h-screen w-screen bg-gradient-to-br from-blue-100 via-sky-50 to-teal-100 py-8 overflow-x-hidden">
@@ -89,7 +106,7 @@ function AuthPage() {
 
       <motion.div
         layout
-        animate={isDesktop ? { height: isLogin ? 580 : 680 } : {}}
+        animate={isDesktop ? { height: cardHeight[mode] } : {}}
         transition={{ duration: 0.5, ease: "easeInOut" }}
         className="relative z-10 flex flex-col lg:flex-row rounded-2xl shadow-xl overflow-hidden w-[calc(100%-2rem)] max-w-sm lg:max-w-none lg:w-[900px]"
       >
@@ -97,7 +114,7 @@ function AuthPage() {
         <motion.div
           layout
           transition={{ duration: 0.5, ease: "easeInOut" }}
-          className={`hidden lg:flex w-1/2 bg-gradient-to-br from-teal-500 to-teal-700 flex-col items-center justify-center text-center px-10 ${isLogin ? "order-1" : "order-2"}`}
+          className={`hidden lg:flex w-1/2 bg-gradient-to-br from-teal-500 to-teal-700 flex-col items-center justify-center text-center px-10 ${brandingOnRight ? "order-2" : "order-1"}`}
         >
           <Leaf size={48} className="text-white" />
           <h1 className="text-4xl font-bold text-white mt-4">Arbor</h1>
@@ -137,7 +154,7 @@ function AuthPage() {
         <motion.div
           layout
           transition={{ duration: 0.5, ease: "easeInOut" }}
-          className={`w-full lg:w-1/2 bg-white flex flex-col items-center justify-center pb-10 lg:py-0 overflow-hidden ${isLogin ? "order-2" : "order-1"}`}
+          className={`w-full lg:w-1/2 bg-white flex flex-col items-center justify-center pb-10 lg:py-0 overflow-hidden ${brandingOnRight ? "order-1" : "order-2"}`}
         >
           {/* Logo-Header — nur auf Mobile/Tablet */}
           <div className="flex lg:hidden w-full items-center justify-center gap-2 bg-gradient-to-br from-teal-500 to-teal-700 py-5 mb-8">
@@ -145,7 +162,7 @@ function AuthPage() {
             <span className="text-xl font-bold text-white">Arbor</span>
           </div>
           <AnimatePresence mode="wait" custom={direction}>
-            {isLogin ? (
+            {mode === "login" && (
               <motion.div
                 key="login"
                 custom={direction}
@@ -155,9 +172,13 @@ function AuthPage() {
                 exit="exit"
                 transition={{ duration: 0.25 }}
               >
-                <LoginForm onSwitch={() => switchTo("register")} />
+                <LoginForm
+                  onSwitch={() => switchTo("register")}
+                  onForgotPassword={() => switchTo("forgot-password")}
+                />
               </motion.div>
-            ) : (
+            )}
+            {mode === "register" && (
               <motion.div
                 key="register"
                 custom={direction}
@@ -168,6 +189,19 @@ function AuthPage() {
                 transition={{ duration: 0.25 }}
               >
                 <RegisterForm onSwitch={() => switchTo("login")} />
+              </motion.div>
+            )}
+            {mode === "forgot-password" && (
+              <motion.div
+                key="forgot-password"
+                custom={direction}
+                variants={formVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{ duration: 0.25 }}
+              >
+                <ForgotPasswordForm onSwitch={() => switchTo("login")} />
               </motion.div>
             )}
           </AnimatePresence>

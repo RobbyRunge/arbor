@@ -9,6 +9,7 @@ function App() {
         <Route path="/" element={<h1>Dashboard</h1>} />
         <Route path="/login" element={<AuthPage />} />
         <Route path="/register" element={<AuthPage />} />
+        <Route path="/forgot-password" element={<AuthPage />} />
       </Routes>
     </BrowserRouter>
   );
