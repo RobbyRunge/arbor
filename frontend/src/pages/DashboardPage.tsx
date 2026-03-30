@@ -117,7 +117,7 @@ function DashboardPage() {
 
   const monthlySaldo = monthlyIncome - monthlyExpenses;
 
-  // Daten für Balkendiagramm (nach Tag)
+  // Build daily data for bar chart
   const dailyMap = new Map<string, { einnahmen: number; ausgaben: number }>();
   for (const tx of currentMonthTx) {
     const day = tx.date.slice(8, 10);
@@ -130,7 +130,7 @@ function DashboardPage() {
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([day, vals]) => ({ tag: `${day}.`, ...vals }));
 
-  // Daten für Donut-Diagramm (Ausgaben nach Kategorie)
+  // Build category expense data for donut chart
   const categoryMap = new Map<string, number>();
   for (const tx of currentMonthTx.filter((tx) => tx.type === "expense")) {
     const name = tx.category_detail?.name ?? "Sonstige";
@@ -141,7 +141,7 @@ function DashboardPage() {
     value,
   }));
 
-  // Letzte 5 Transaktionen
+  // Last 5 transactions
   const recentTx = transactions.slice(0, 5);
 
   if (isLoading) {
@@ -154,7 +154,7 @@ function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+      {/* Page header */}
       <div>
         <h1 className="text-2xl font-bold text-gray-800">
           Guten Tag{user?.first_name ? `, ${user.first_name}` : ""}!
@@ -164,7 +164,7 @@ function DashboardPage() {
         </p>
       </div>
 
-      {/* Kennzahlen */}
+      {/* Stat cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         <StatCard
           title="Gesamtguthaben"
@@ -201,7 +201,7 @@ function DashboardPage() {
 
       {/* Charts */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-        {/* Balkendiagramm */}
+        {/* Bar chart */}
         <div className="bg-white/80 backdrop-blur rounded-2xl shadow p-5">
           <h2 className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-4">
             Einnahmen &amp; Ausgaben
@@ -238,7 +238,7 @@ function DashboardPage() {
           )}
         </div>
 
-        {/* Donut-Diagramm */}
+        {/* Donut chart */}
         <div className="bg-white/80 backdrop-blur rounded-2xl shadow p-5">
           <h2 className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-4">
             Ausgaben nach Kategorie
@@ -278,7 +278,7 @@ function DashboardPage() {
         </div>
       </div>
 
-      {/* Letzte Transaktionen */}
+      {/* Recent transactions */}
       <div className="bg-white/80 backdrop-blur rounded-2xl shadow p-5">
         <h2 className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-4">
           Letzte Transaktionen

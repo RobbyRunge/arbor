@@ -9,7 +9,7 @@ function AppLayout() {
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-blue-100 via-sky-50 to-teal-100">
-      {/* Overlay für Mobile */}
+      {/* Mobile overlay */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black/30 z-20 md:hidden"
@@ -26,7 +26,7 @@ function AppLayout() {
         <Sidebar onClose={() => setSidebarOpen(false)} />
       </div>
 
-      {/* Hauptbereich */}
+      {/* Main content */}
       <main className="flex-1 p-4 md:p-8 min-w-0">
         <button
           onClick={() => setSidebarOpen(true)}
