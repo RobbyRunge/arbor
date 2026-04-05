@@ -22,6 +22,7 @@ import {
 import { fetchAccounts } from "../api/accounts";
 import { fetchTransactions } from "../api/transactions";
 import { useAuthStore } from "../store/authStore";
+import { getCurrentMonth, getMonthLabel } from "../utils/date";
 
 const DONUT_COLORS = [
   "#6366f1",
@@ -41,18 +42,6 @@ function formatCurrency(amount: number): string {
     style: "currency",
     currency: "EUR",
   }).format(amount);
-}
-
-function getCurrentMonth(): string {
-  const now = new Date();
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
-}
-
-function getMonthLabel(): string {
-  return new Date().toLocaleDateString("de-DE", {
-    month: "long",
-    year: "numeric",
-  });
 }
 
 function StatCard({
