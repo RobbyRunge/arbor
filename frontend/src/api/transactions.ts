@@ -29,7 +29,15 @@ export interface Transaction {
   description: string;
 }
 
-export async function fetchTransactions(): Promise<Transaction[]> {
-  const { data } = await axios.get("/api/transactions/", { withCredentials: true });
+export async function fetchTransactions(filters: {
+  month: string;
+  type: string;
+  category: string;
+  search: string;
+}): Promise<Transaction[]> {
+  const { data } = await axios.get("/api/transactions/", {
+    withCredentials: true,
+    params: filters,
+  });
   return data;
 }
