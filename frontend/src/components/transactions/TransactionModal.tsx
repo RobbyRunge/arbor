@@ -118,7 +118,7 @@ function TransactionModal({ onClose }: Props) {
             </button>
           </div>
 
-          {/* Betrag */}
+          {/* Amount */}
           <div>
             <label className="block text-xs font-medium text-gray-500 mb-1">
               Betrag (€)
@@ -133,7 +133,7 @@ function TransactionModal({ onClose }: Props) {
             />
           </div>
 
-          {/* Datum */}
+          {/* Date */}
           <div>
             <label className="block text-xs font-medium text-gray-500 mb-1">
               Datum
@@ -146,7 +146,7 @@ function TransactionModal({ onClose }: Props) {
             />
           </div>
 
-          {/* Konto */}
+          {/* Account */}
           <div>
             <label className="block text-xs font-medium text-gray-500 mb-1">
               Konto
@@ -165,7 +165,7 @@ function TransactionModal({ onClose }: Props) {
             </select>
           </div>
 
-          {/* Kategorie */}
+          {/* Category */}
           <div>
             <label className="block text-xs font-medium text-gray-500 mb-1">
               Kategorie
@@ -184,7 +184,7 @@ function TransactionModal({ onClose }: Props) {
             </select>
           </div>
 
-          {/* Beschreibung */}
+          {/* Description */}
           <div>
             <label className="block text-xs font-medium text-gray-500 mb-1">
               Beschreibung
