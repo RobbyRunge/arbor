@@ -29,6 +29,20 @@ export interface Transaction {
   description: string;
 }
 
+export interface TransactionPayload {
+  account: number;
+  category: number | null;
+  amount: string;
+  type: "income" | "expense";
+  date: string;
+  description: string;
+}
+
+export async function createTransaction(payload: TransactionPayload): Promise<Transaction> {
+  const { data } = await axios.post("/api/transactions/", payload, { withCredentials: true });
+  return data;
+}
+
 export async function fetchTransactions(filters: {
   month: string;
   type: string;

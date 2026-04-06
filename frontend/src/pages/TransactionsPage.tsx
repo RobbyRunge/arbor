@@ -3,12 +3,14 @@ import { useQuery } from "@tanstack/react-query";
 
 import { getCurrentMonth } from "../utils/date";
 import { fetchTransactions } from "../api/transactions";
+import TransactionModal from "../components/transactions/TransactionModal";
 
 function TransactionsPage() {
   const [month, setMonth] = useState(getCurrentMonth());
   const [type, setType] = useState("");
   const [category, setCategory] = useState("");
   const [search, setSearch] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
   const { data: transactions = [], isLoading: txLoading } = useQuery({
     queryKey: ["transactions", { month, type, category, search }],
@@ -16,6 +18,7 @@ function TransactionsPage() {
   });
 
   return (
+    <>
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
@@ -23,8 +26,8 @@ function TransactionsPage() {
           <h1 className="text-2xl font-bold text-gray-800">Transaktionen</h1>
         </div>
         <button
-          className="bg-teal-600 text-white px-4 py-2 rounded-xl text-sm font-medium 
-  hover:bg-teal-700"
+          onClick={() => setShowModal(true)}
+          className="bg-teal-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-teal-700"
         >
           + Neue Transaktion
         </button>
@@ -88,7 +91,10 @@ function TransactionsPage() {
         )}
       </div>
     </div>
+
+    {showModal && <TransactionModal onClose={() => setShowModal(false)} />}
+    </>
   );
-}
+}    
 
 export default TransactionsPage;
