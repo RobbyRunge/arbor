@@ -38,8 +38,12 @@ export interface TransactionPayload {
   description: string;
 }
 
-export async function createTransaction(payload: TransactionPayload): Promise<Transaction> {
-  const { data } = await axios.post("/api/transactions/", payload, { withCredentials: true });
+export async function createTransaction(
+  payload: TransactionPayload,
+): Promise<Transaction> {
+  const { data } = await axios.post("/api/transactions/", payload, {
+    withCredentials: true,
+  });
   return data;
 }
 
@@ -54,4 +58,10 @@ export async function fetchTransactions(filters: {
     params: filters,
   });
   return data;
+}
+
+export async function deleteTransaction(id: number): Promise<void> {
+  await axios.delete(`/api/transactions/${id}/`, {
+    withCredentials: true,
+  });
 }
