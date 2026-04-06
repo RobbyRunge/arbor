@@ -15,6 +15,7 @@ function TransactionsPage() {
   const [search, setSearch] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [confirmId, setConfirmId] = useState<number | null>(null);
+  const [error, setError] = useState("");
 
   const { data: transactions = [], isLoading: txLoading } = useQuery({
     queryKey: ["transactions", { month, type, category, search }],
@@ -26,9 +27,10 @@ function TransactionsPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
       queryClient.invalidateQueries({ queryKey: ["accounts"] });
+      setError("");
     },
     onError: () => {
-      console.error("Fehler beim löschen.");
+      setError("Transaktion konnte nicht gelöscht werden.");
     },
   });
 
@@ -47,6 +49,7 @@ function TransactionsPage() {
             + Neue Transaktion
           </button>
         </div>
+        {error && <p className="text-sm text-rose-500">{error}</p>}
 
         {/* Filter bar */}
         <div className="flex flex-wrap gap-3 bg-white/80 backdrop-blur rounded-2xl shadow p-5">
