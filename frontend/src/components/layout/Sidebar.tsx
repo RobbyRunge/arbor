@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
   Leaf,
   LayoutDashboard,
@@ -6,9 +6,19 @@ import {
   Wallet,
   PiggyBank,
   X,
+  LogOut,
 } from "lucide-react";
+import { useAuthStore } from "../../store/authStore";
 
 function Sidebar({ onClose }: { onClose?: () => void }) {
+  const logout = useAuthStore((s) => s.logout);
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
+  };
+
   return (
     <aside className="w-64 h-full bg-white shadow-lg flex flex-col p-6">
       <div className="flex items-center justify-between mb-10 py-2 px-3">
@@ -84,6 +94,17 @@ function Sidebar({ onClose }: { onClose?: () => void }) {
           Budgets
         </NavLink>
       </nav>
+      <div className="mt-auto">
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-3 py-2 px-3 rounded-lg w-full hover:bg-red-50 transition-colors group"
+        >
+          <LogOut size={20} className="text-red-500" />
+          <span className="text-gray-500 group-hover:text-red-500 transition-colors">
+            Abmelden
+          </span>
+        </button>
+      </div>
     </aside>
   );
 }
