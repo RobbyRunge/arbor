@@ -58,13 +58,15 @@ function StatCard({
   sub?: string;
 }) {
   return (
-    <div className="bg-white/80 backdrop-blur rounded-2xl shadow p-5 flex items-center gap-4">
-      <div className={`p-3 rounded-xl ${color}`}>{icon}</div>
-      <div>
-        <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">
+    <div className="bg-white/80 backdrop-blur rounded-2xl shadow p-5 flex items-center gap-4 min-w-0">
+      <div className={`p-3 rounded-xl flex-shrink-0 ${color}`}>{icon}</div>
+      <div className="min-w-0 flex-1">
+        <p className="text-xs text-gray-500 font-medium uppercase tracking-wide truncate">
           {title}
         </p>
-        <p className="text-2xl font-bold text-gray-800 mt-0.5">{value}</p>
+        <p className="text-lg font-bold text-gray-800 mt-0.5 leading-tight break-all">
+          {value}
+        </p>
         {sub && <p className="text-xs text-gray-400 mt-0.5">{sub}</p>}
       </div>
     </div>

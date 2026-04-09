@@ -83,7 +83,7 @@ function AppLayout() {
         </div>
 
         {/* Main content */}
-        <main className="flex-1 bg-white/90 p-4 md:p-8 min-w-0 overflow-y-auto">
+        <main className="flex-1 bg-white/90 p-4 md:p-8 min-w-0 overflow-y-auto app-scroll">
           <button
             onClick={() => setSidebarOpen(true)}
             className="mb-4 p-2 rounded-lg text-gray-600 hover:bg-white/60 md:hidden"
