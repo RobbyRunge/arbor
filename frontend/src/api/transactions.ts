@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "./axiosInstance";
 
 export interface CategoryDetail {
   id: number;
@@ -41,9 +41,7 @@ export interface TransactionPayload {
 export async function createTransaction(
   payload: TransactionPayload,
 ): Promise<Transaction> {
-  const { data } = await axios.post("/api/transactions/", payload, {
-    withCredentials: true,
-  });
+  const { data } = await api.post("/api/transactions/", payload);
   return data;
 }
 
@@ -53,15 +51,10 @@ export async function fetchTransactions(filters: {
   category: string;
   search: string;
 }): Promise<Transaction[]> {
-  const { data } = await axios.get("/api/transactions/", {
-    withCredentials: true,
-    params: filters,
-  });
+  const { data } = await api.get("/api/transactions/", { params: filters });
   return data;
 }
 
 export async function deleteTransaction(id: number): Promise<void> {
-  await axios.delete(`/api/transactions/${id}/`, {
-    withCredentials: true,
-  });
+  await api.delete(`/api/transactions/${id}/`);
 }

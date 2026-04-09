@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import axios from "axios";
+import api from "../api/axiosInstance";
 
 interface User {
   id: number;
@@ -20,9 +21,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   isLoading: true,
   checkAuth: async () => {
     try {
-      const response = await axios.get("/api/auth/me/", {
-        withCredentials: true,
-      });
+      const response = await api.get("/api/auth/me/");
       set({ user: response.data, isLoading: false });
     } catch {
       set({ user: null, isLoading: false });

@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "./axiosInstance";
 
 export interface Category {
   id: number;
@@ -9,8 +9,6 @@ export interface Category {
 }
 
 export async function fetchCategories(): Promise<Category[]> {
-  const { data } = await axios.get("/api/categories/", {
-    withCredentials: true,
-  });
+  const { data } = await api.get("/api/categories/");
   return data;
 }

@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "./axiosInstance";
 
 export interface Account {
   id: number;
@@ -10,6 +10,6 @@ export interface Account {
 }
 
 export async function fetchAccounts(): Promise<Account[]> {
-  const { data } = await axios.get("/api/accounts/", { withCredentials: true });
+  const { data } = await api.get("/api/accounts/");
   return data;
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Leaf, LayoutDashboard, PiggyBank, FileDown } from "lucide-react";
 
@@ -37,8 +37,17 @@ const cardHeight: Record<AuthMode, number> = {
 function AuthPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const isDesktop = useIsDesktop();
   const [direction, setDirection] = useState(0);
+
+  const sessionReason = searchParams.get("reason");
+  const sessionMessage =
+    sessionReason === "inactivity"
+      ? "Aus Sicherheitsgründen wurdest du nach 10 Minuten Inaktivität abgemeldet."
+      : sessionReason === "session_expired"
+        ? "Deine Sitzung ist abgelaufen. Bitte melde dich erneut an."
+        : null;
 
   const mode: AuthMode =
     location.pathname === "/register"
@@ -161,6 +170,13 @@ function AuthPage() {
             <Leaf size={22} className="text-white" />
             <span className="text-xl font-bold text-white">Arbor</span>
           </div>
+          {sessionMessage && (
+            <div className="w-full px-8 mb-4">
+              <div className="bg-amber-50 border border-amber-300 text-amber-800 text-sm rounded-lg px-4 py-3">
+                {sessionMessage}
+              </div>
+            </div>
+          )}
           <AnimatePresence mode="wait" custom={direction}>
             {mode === "login" && (
               <motion.div

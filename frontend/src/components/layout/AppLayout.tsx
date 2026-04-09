@@ -3,9 +3,11 @@ import { Outlet } from "react-router-dom";
 import { Menu } from "lucide-react";
 
 import Sidebar from "./Sidebar";
+import { useInactivity } from "../../hooks/useInactivity";
 
 function AppLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  useInactivity();
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-blue-100 via-sky-50 to-teal-100">
