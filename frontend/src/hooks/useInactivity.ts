@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 
-const INACTIVITY_MS = 10 * 60 * 1000; // 10 Minuten
+const INACTIVITY_MS = 10 * 60 * 1000;
 
 export function useInactivity() {
   const logout = useAuthStore((s) => s.logout);

@@ -43,7 +43,6 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError);
-        // Refresh fehlgeschlagen → ausloggen
         await axios
           .post("/api/auth/logout/", {}, { withCredentials: true })
           .catch(() => {});
