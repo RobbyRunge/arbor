@@ -17,13 +17,17 @@ function Sidebar({ onClose }: { onClose?: () => void }) {
           <span className="text-xl font-bold">Arbor</span>
         </div>
         {onClose && (
-          <button onClick={onClose} className="md:hidden text-gray-400 hover:text-gray-600">
+          <button
+            onClick={onClose}
+            className="md:hidden text-gray-400 hover:text-gray-600"
+          >
             <X size={20} />
           </button>
         )}
       </div>
       <nav className="flex flex-col gap-1">
         <NavLink
+          onClick={onClose}
           to="/"
           end
           className={({ isActive }) =>
@@ -38,6 +42,7 @@ function Sidebar({ onClose }: { onClose?: () => void }) {
           Dashboard
         </NavLink>
         <NavLink
+          onClick={onClose}
           to="/transactions"
           className={({ isActive }) =>
             `flex items-center gap-3 py-2 px-3 rounded-lg ${
@@ -51,6 +56,7 @@ function Sidebar({ onClose }: { onClose?: () => void }) {
           Transaktionen
         </NavLink>
         <NavLink
+          onClick={onClose}
           to="/accounts"
           className={({ isActive }) =>
             `flex items-center gap-3 py-2 px-3 rounded-lg ${
@@ -64,6 +70,7 @@ function Sidebar({ onClose }: { onClose?: () => void }) {
           Konten
         </NavLink>
         <NavLink
+          onClick={onClose}
           to="/budgets"
           className={({ isActive }) =>
             `flex items-center gap-3 py-2 px-3 rounded-lg ${
