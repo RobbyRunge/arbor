@@ -121,6 +121,7 @@ function AuthPage() {
 
       <motion.div
         layout
+        initial={isDesktop ? { height: cardHeight[mode] } : {}}
         animate={isDesktop ? { height: cardHeight[mode] } : {}}
         transition={{ duration: 0.5, ease: "easeInOut" }}
         className="relative z-10 flex flex-col lg:flex-row rounded-2xl shadow-xl overflow-hidden w-[calc(100%-2rem)] max-w-sm lg:max-w-none lg:w-[900px]"
