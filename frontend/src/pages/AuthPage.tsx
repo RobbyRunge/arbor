@@ -49,6 +49,12 @@ function AuthPage() {
         ? "Deine Sitzung ist abgelaufen. Bitte melde dich erneut an."
         : null;
 
+  useEffect(() => {
+    if (sessionReason) {
+      navigate(location.pathname, { replace: true });
+    }
+  }, []);
+
   const mode: AuthMode =
     location.pathname === "/register"
       ? "register"
