@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginUser } from "../../api/auth";
+import { useTransitionNavigate } from "../../context/TransitionContext";
 
 const schema = z.object({
   email: z.string().email("Ungültige E-Mail"),
@@ -19,7 +19,7 @@ function LoginForm({
   onSwitch: () => void;
   onForgotPassword: () => void;
 }) {
-  const navigate = useNavigate();
+  const navigateWithTransition = useTransitionNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
 
@@ -37,7 +37,7 @@ function LoginForm({
 
     try {
       await loginUser(data.email, data.password);
-      navigate("/");
+      navigateWithTransition("/");
     } catch {
       setServerError("E-Mail oder Passwort ungültig.");
     } finally {

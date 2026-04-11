@@ -7,6 +7,7 @@ import AppLayout from "./components/layout/AppLayout";
 import DashboardPage from "./pages/DashboardPage";
 import TransactionsPage from "./pages/TransactionsPage";
 import SplashScreen from "./components/layout/SplashScreen";
+import { TransitionProvider } from "./context/TransitionContext";
 
 const splashShown = sessionStorage.getItem("splashShown");
 
@@ -22,17 +23,19 @@ function App() {
     <>
       {showSplash && <SplashScreen onDone={handleSplashDone} />}
       <BrowserRouter>
-        <Routes>
-          <Route element={<ProtectedRoute />}>
-            <Route element={<AppLayout />}>
-              <Route path="/" element={<DashboardPage />} />
-              <Route path="/transactions" element={<TransactionsPage />} />
+        <TransitionProvider>
+          <Routes>
+            <Route element={<ProtectedRoute />}>
+              <Route element={<AppLayout />}>
+                <Route path="/" element={<DashboardPage />} />
+                <Route path="/transactions" element={<TransactionsPage />} />
+              </Route>
             </Route>
-          </Route>
-          <Route path="/login" element={<AuthPage />} />
-          <Route path="/register" element={<AuthPage />} />
-          <Route path="/forgot-password" element={<AuthPage />} />
-        </Routes>
+            <Route path="/login" element={<AuthPage />} />
+            <Route path="/register" element={<AuthPage />} />
+            <Route path="/forgot-password" element={<AuthPage />} />
+          </Routes>
+        </TransitionProvider>
       </BrowserRouter>
     </>
   );

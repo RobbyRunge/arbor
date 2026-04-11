@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import {
   Leaf,
   LayoutDashboard,
@@ -9,14 +9,14 @@ import {
   LogOut,
 } from "lucide-react";
 import { useAuthStore } from "../../store/authStore";
+import { useTransitionNavigate } from "../../context/TransitionContext";
 
 function Sidebar({ onClose }: { onClose?: () => void }) {
   const logout = useAuthStore((s) => s.logout);
-  const navigate = useNavigate();
+  const navigateWithTransition = useTransitionNavigate();
 
-  const handleLogout = async () => {
-    await logout();
-    navigate("/login");
+  const handleLogout = () => {
+    navigateWithTransition("/login", logout);
   };
 
   return (
