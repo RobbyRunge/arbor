@@ -4,6 +4,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginUser } from "../../api/auth";
 import { useTransitionNavigate } from "../../context/TransitionContext";
+import { useAuthStore } from "../../store/authStore";
 
 const schema = z.object({
   email: z.string().email("Ungültige E-Mail"),
@@ -20,6 +21,7 @@ function LoginForm({
   onForgotPassword: () => void;
 }) {
   const navigateWithTransition = useTransitionNavigate();
+  const { checkAuth } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
 
@@ -37,6 +39,7 @@ function LoginForm({
 
     try {
       await loginUser(data.email, data.password);
+      await checkAuth();
       navigateWithTransition("/");
     } catch {
       setServerError("E-Mail oder Passwort ungültig.");
