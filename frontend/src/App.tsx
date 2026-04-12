@@ -8,6 +8,8 @@ import DashboardPage from "./pages/DashboardPage";
 import TransactionsPage from "./pages/TransactionsPage";
 import SplashScreen from "./components/layout/SplashScreen";
 import { TransitionProvider } from "./context/TransitionContext";
+import LegalNoticePage from "./pages/LegalNoticePage";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 
 const splashShown = sessionStorage.getItem("splashShown");
 
@@ -34,6 +36,8 @@ function App() {
             <Route path="/login" element={<AuthPage />} />
             <Route path="/register" element={<AuthPage />} />
             <Route path="/forgot-password" element={<AuthPage />} />
+            <Route path="/legal-notice" element={<LegalNoticePage />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
           </Routes>
         </TransitionProvider>
       </BrowserRouter>

@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
+import {
+  useNavigate,
+  useLocation,
+  useSearchParams,
+  Link,
+} from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Leaf, LayoutDashboard, PiggyBank, FileDown } from "lucide-react";
 
@@ -70,7 +75,7 @@ function AuthPage() {
   const brandingOnRight = mode === "register";
 
   return (
-    <div className="relative flex items-center justify-center min-h-screen w-screen bg-gradient-to-br from-blue-100 via-sky-50 to-teal-100 py-8 overflow-x-hidden">
+    <div className="relative flex flex-col items-center justify-center min-h-screen w-screen bg-gradient-to-br from-blue-100 via-sky-50 to-teal-100 py-8 overflow-x-hidden">
       <svg
         className="absolute inset-0 w-full h-full z-0"
         xmlns="http://www.w3.org/2000/svg"
@@ -230,6 +235,25 @@ function AuthPage() {
           </AnimatePresence>
         </motion.div>
       </motion.div>
+
+      {/* Footer */}
+      <div className="relative z-10 mt-6 flex items-center gap-3 text-xs text-slate-500/80">
+        <span>© 2026 Arbor</span>
+        <span className="text-slate-400/60">·</span>
+        <Link
+          to="/legal-notice"
+          className="hover:text-teal-600 transition-colors duration-150"
+        >
+          Impressum
+        </Link>
+        <span className="text-slate-400/60">·</span>
+        <Link
+          to="/privacy-policy"
+          className="hover:text-teal-600 transition-colors duration-150"
+        >
+          Datenschutz
+        </Link>
+      </div>
     </div>
   );
 }
