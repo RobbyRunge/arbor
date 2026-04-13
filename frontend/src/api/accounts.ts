@@ -3,7 +3,7 @@ import api from "./axiosInstance";
 export interface Account {
   id: number;
   name: string;
-  type: string;
+  type: "checking" | "savings" | "cash" | "credit_card" | "investment";
   balance: string;
   icon: string;
   color: string;
