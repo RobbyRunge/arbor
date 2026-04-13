@@ -11,6 +11,7 @@ import { TransitionProvider } from "./context/TransitionContext";
 import LegalNoticePage from "./pages/LegalNoticePage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import AccountsPage from "./pages/AccountsPage";
+import BudgetsPage from "./pages/BudgetsPage";
 
 const splashShown = sessionStorage.getItem("splashShown");
 
@@ -33,6 +34,7 @@ function App() {
                 <Route path="/" element={<DashboardPage />} />
                 <Route path="/transactions" element={<TransactionsPage />} />
                 <Route path="/accounts" element={<AccountsPage />} />
+                <Route path="/budgets" element={<BudgetsPage />} />
               </Route>
             </Route>
             <Route path="/login" element={<AuthPage />} />
