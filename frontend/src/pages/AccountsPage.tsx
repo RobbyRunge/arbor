@@ -74,7 +74,7 @@ function AccountsPage() {
             <div
               key={account.id}
               onClick={() => openEdit(account)}
-              className="bg-white rounded-2xl shadow p-6 relative group cursor-pointer md:cursor-default"
+              className="bg-white rounded-2xl shadow p-6 relative group cursor-pointer md:cursor-default transition-shadow hover:shadow-md"
             >
               {/* Edit-Button (nur Desktop) */}
               <button
