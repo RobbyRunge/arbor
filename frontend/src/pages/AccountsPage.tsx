@@ -71,11 +71,15 @@ function AccountsPage() {
         {accounts?.map((account) => {
           const Icon = iconMap[account.type];
           return (
-            <div key={account.id} className="bg-white rounded-2xl shadow p-6 relative group">
-              {/* Edit-Button */}
+            <div
+              key={account.id}
+              onClick={() => openEdit(account)}
+              className="bg-white rounded-2xl shadow p-6 relative group cursor-pointer md:cursor-default"
+            >
+              {/* Edit-Button (nur Desktop) */}
               <button
-                onClick={() => openEdit(account)}
-                className="absolute top-4 right-4 text-gray-300 hover:text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                onClick={(e) => { e.stopPropagation(); openEdit(account); }}
+                className="absolute top-4 right-4 text-gray-300 hover:text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity hidden md:flex"
               >
                 <Pencil size={15} />
               </button>
