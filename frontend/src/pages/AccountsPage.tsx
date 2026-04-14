@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   Landmark,
@@ -5,9 +6,12 @@ import {
   Banknote,
   CreditCard,
   TrendingUp,
+  Pencil,
 } from "lucide-react";
 
+import type { Account } from "../api/accounts";
 import { fetchAccounts } from "../api/accounts";
+import AccountModal from "../components/accounts/AccountModal";
 
 const iconMap = {
   checking: Landmark,
@@ -26,10 +30,28 @@ const typeLabels: Record<string, string> = {
 };
 
 function AccountsPage() {
-  const { data: accounts, isLoading } = useQuery({
+  const [showModal, setShowModal] = useState(false);
+  const [editingAccount, setEditingAccount] = useState<Account | undefined>(undefined);
+
+  const { data: accounts } = useQuery({
     queryKey: ["accounts"],
     queryFn: fetchAccounts,
   });
+
+  function openCreate() {
+    setEditingAccount(undefined);
+    setShowModal(true);
+  }
+
+  function openEdit(account: Account) {
+    setEditingAccount(account);
+    setShowModal(true);
+  }
+
+  function closeModal() {
+    setShowModal(false);
+    setEditingAccount(undefined);
+  }
 
   return (
     <div className="space-y-6">
@@ -37,19 +59,27 @@ function AccountsPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-800">Konten</h1>
         <button
-          onClick={() => {}}
+          onClick={openCreate}
           className="bg-teal-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-teal-700"
         >
           + Neues Konto
         </button>
       </div>
 
-      {/* List */}
+      {/* Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {accounts?.map((account) => {
           const Icon = iconMap[account.type];
           return (
-            <div key={account.id} className="bg-white rounded-2xl shadow p-6">
+            <div key={account.id} className="bg-white rounded-2xl shadow p-6 relative group">
+              {/* Edit-Button */}
+              <button
+                onClick={() => openEdit(account)}
+                className="absolute top-4 right-4 text-gray-300 hover:text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                <Pencil size={15} />
+              </button>
+
               <div
                 style={{ backgroundColor: account.color }}
                 className="p-3 rounded-xl flex-shrink-0 flex items-center justify-center w-fit"
@@ -77,6 +107,11 @@ function AccountsPage() {
           );
         })}
       </div>
+
+      {/* Modal */}
+      {showModal && (
+        <AccountModal account={editingAccount} onClose={closeModal} />
+      )}
     </div>
   );
 }
