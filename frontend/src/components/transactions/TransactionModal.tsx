@@ -4,23 +4,41 @@ import { X } from "lucide-react";
 
 import { fetchAccounts } from "../../api/accounts";
 import { fetchCategories } from "../../api/categories";
-import { createTransaction } from "../../api/transactions";
+import {
+  createTransaction,
+  updateTransaction,
+  type Transaction,
+} from "../../api/transactions";
 
 interface Props {
   onClose: () => void;
+  transaction?: Transaction;
 }
 
 const today = () => new Date().toISOString().split("T")[0];
 
-function TransactionModal({ onClose }: Props) {
+function TransactionModal({ onClose, transaction }: Props) {
   const queryClient = useQueryClient();
+  const isEdit = transaction !== undefined;
 
-  const [type, setType] = useState<"expense" | "income">("expense");
-  const [amount, setAmount] = useState("");
-  const [date, setDate] = useState(today());
-  const [accountId, setAccountId] = useState<string>("");
-  const [categoryId, setCategoryId] = useState<string>("");
-  const [description, setDescription] = useState("");
+  const [type, setType] = useState<"expense" | "income">(
+    transaction?.type ?? "expense",
+  );
+  const [amount, setAmount] = useState(
+    transaction
+      ? parseFloat(transaction.amount).toFixed(2).replace(".", ",")
+      : "",
+  );
+  const [date, setDate] = useState(transaction?.date ?? today());
+  const [accountId, setAccountId] = useState<string>(
+    transaction ? String(transaction.account) : "",
+  );
+  const [categoryId, setCategoryId] = useState<string>(
+    transaction?.category ? String(transaction.category) : "",
+  );
+  const [description, setDescription] = useState(
+    transaction?.description ?? "",
+  );
   const [error, setError] = useState("");
 
   const { data: accounts = [] } = useQuery({
@@ -36,7 +54,10 @@ function TransactionModal({ onClose }: Props) {
   const filteredCategories = categories.filter((c) => c.type === type);
 
   const mutation = useMutation({
-    mutationFn: createTransaction,
+    mutationFn: (payload: Parameters<typeof createTransaction>[0]) =>
+      isEdit
+        ? updateTransaction(transaction!.id, payload)
+        : createTransaction(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
       queryClient.invalidateQueries({ queryKey: ["accounts"] });
@@ -76,7 +97,9 @@ function TransactionModal({ onClose }: Props) {
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 p-6">
         {/* Header */}
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-lg font-bold text-gray-800">Neue Transaktion</h2>
+          <h2 className="text-lg font-bold text-gray-800">
+            {isEdit ? "Transaktion bearbeiten" : "Neue Transaktion"}
+          </h2>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600"
@@ -214,7 +237,11 @@ function TransactionModal({ onClose }: Props) {
               disabled={mutation.isPending}
               className="flex-1 bg-teal-600 text-white rounded-xl py-2 text-sm font-medium hover:bg-teal-700 disabled:opacity-60"
             >
-              {mutation.isPending ? "Speichern…" : "Speichern"}
+              {mutation.isPending
+                ? "Speichern…"
+                : isEdit
+                  ? "Änderungen speichern"
+                  : "Speichern"}
             </button>
           </div>
         </form>

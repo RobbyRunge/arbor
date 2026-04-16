@@ -55,6 +55,14 @@ export async function fetchTransactions(filters: {
   return data;
 }
 
+export async function updateTransaction(
+  id: number,
+  payload: TransactionPayload,
+): Promise<Transaction> {
+  const { data } = await api.patch(`/api/transactions/${id}/`, payload);
+  return data;
+}
+
 export async function deleteTransaction(id: number): Promise<void> {
   await api.delete(`/api/transactions/${id}/`);
 }

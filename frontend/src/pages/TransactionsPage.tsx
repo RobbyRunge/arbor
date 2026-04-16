@@ -1,9 +1,13 @@
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 
 import { getCurrentMonth, getWeekKey, getWeekLabel } from "../utils/date";
-import { fetchTransactions, deleteTransaction } from "../api/transactions";
+import {
+  fetchTransactions,
+  deleteTransaction,
+  type Transaction,
+} from "../api/transactions";
 import TransactionModal from "../components/transactions/TransactionModal";
 
 function TransactionsPage() {
@@ -14,6 +18,7 @@ function TransactionsPage() {
   const [category, setCategory] = useState("");
   const [search, setSearch] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [editTx, setEditTx] = useState<Transaction | null>(null);
   const [confirmId, setConfirmId] = useState<number | null>(null);
   const [error, setError] = useState("");
 
@@ -153,6 +158,13 @@ function TransactionsPage() {
                               {fmt(parseFloat(tx.amount))}
                             </span>
 
+                            <button
+                              className="text-gray-400 hover:text-teal-600"
+                              onClick={() => setEditTx(tx)}
+                            >
+                              <Pencil size={16} />
+                            </button>
+
                             {confirmId === tx.id ? (
                               <div className="flex items-center gap-2">
                                 <button
@@ -175,7 +187,7 @@ function TransactionsPage() {
                                 disabled={mutation.isPending}
                                 onClick={() => setConfirmId(tx.id)}
                               >
-                                <Trash2 size={20} />
+                                <Trash2 size={16} />
                               </button>
                             )}
                           </div>
@@ -191,6 +203,12 @@ function TransactionsPage() {
       </div>
 
       {showModal && <TransactionModal onClose={() => setShowModal(false)} />}
+      {editTx && (
+        <TransactionModal
+          transaction={editTx}
+          onClose={() => setEditTx(null)}
+        />
+      )}
     </>
   );
 }
