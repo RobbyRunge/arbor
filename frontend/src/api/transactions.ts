@@ -1,12 +1,5 @@
 import api from "./axiosInstance";
-
-export interface CategoryDetail {
-  id: number;
-  name: string;
-  icon: string;
-  color: string;
-  type: string;
-}
+import type { CategoryDetail } from "../types/types.ts";
 
 export interface AccountDetail {
   id: number;
