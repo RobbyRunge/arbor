@@ -3,9 +3,9 @@ import type { CategoryDetail } from "../types/types.ts";
 
 export interface Budget {
   id: number;
-  category: string;
-  amount: number;
-  spent: number;
+  category: number;
+  amount: string;
+  spent: string | number;
   month: number;
   year: number;
   notification_threshold: number;
@@ -14,7 +14,7 @@ export interface Budget {
 
 export interface BudgetPayload {
   amount: number;
-  category: string;
+  category: number;
   month: number;
   year: number;
   notification_threshold: number;
