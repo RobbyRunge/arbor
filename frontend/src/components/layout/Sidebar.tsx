@@ -5,17 +5,39 @@ import {
   ArrowLeftRight,
   Wallet,
   PiggyBank,
+  X,
+  LogOut,
 } from "lucide-react";
+import { useAuthStore } from "../../store/authStore";
+import { useTransitionNavigate } from "../../context/TransitionContext";
 
-function Sidebar() {
+function Sidebar({ onClose }: { onClose?: () => void }) {
+  const logout = useAuthStore((s) => s.logout);
+  const navigateWithTransition = useTransitionNavigate();
+
+  const handleLogout = () => {
+    navigateWithTransition("/login", logout);
+  };
+
   return (
-    <aside className="w-64 bg-white shadow-lg flex flex-col p-6">
-      <div className="flex items-center gap-2 text-teal-600 mb-10 py-2 px-3">
-        <Leaf size={24} />
-        <span className="text-xl font-bold">Arbor</span>
+    <aside className="w-64 h-full bg-white shadow-lg flex flex-col p-6">
+      <div className="flex items-center justify-between mb-10 py-2 px-3">
+        <div className="flex items-center gap-2 text-teal-600">
+          <Leaf size={24} />
+          <span className="text-xl font-bold">Arbor</span>
+        </div>
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="md:hidden text-gray-400 hover:text-gray-600"
+          >
+            <X size={20} />
+          </button>
+        )}
       </div>
       <nav className="flex flex-col gap-1">
         <NavLink
+          onClick={onClose}
           to="/"
           end
           className={({ isActive }) =>
@@ -30,6 +52,7 @@ function Sidebar() {
           Dashboard
         </NavLink>
         <NavLink
+          onClick={onClose}
           to="/transactions"
           className={({ isActive }) =>
             `flex items-center gap-3 py-2 px-3 rounded-lg ${
@@ -43,6 +66,7 @@ function Sidebar() {
           Transaktionen
         </NavLink>
         <NavLink
+          onClick={onClose}
           to="/accounts"
           className={({ isActive }) =>
             `flex items-center gap-3 py-2 px-3 rounded-lg ${
@@ -56,6 +80,7 @@ function Sidebar() {
           Konten
         </NavLink>
         <NavLink
+          onClick={onClose}
           to="/budgets"
           className={({ isActive }) =>
             `flex items-center gap-3 py-2 px-3 rounded-lg ${
@@ -69,6 +94,17 @@ function Sidebar() {
           Budgets
         </NavLink>
       </nav>
+      <div className="mt-auto">
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-3 py-2 px-3 rounded-lg w-full hover:bg-red-50 transition-colors group"
+        >
+          <LogOut size={20} className="text-red-500" />
+          <span className="text-gray-500 group-hover:text-red-500 transition-colors">
+            Abmelden
+          </span>
+        </button>
+      </div>
     </aside>
   );
 }

@@ -10,3 +10,21 @@ html, body, #root {
   width: 100%;
   height: 100%;
 }
+
+/* App scrollbar */
+.app-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.app-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.app-scroll::-webkit-scrollbar-thumb {
+  background: rgba(20, 184, 166, 0.35);
+  border-radius: 99px;
+}
+
+.app-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(20, 184, 166, 0.65);
+}

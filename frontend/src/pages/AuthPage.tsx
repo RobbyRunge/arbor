@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import {
+  useNavigate,
+  useLocation,
+  useSearchParams,
+  Link,
+} from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Leaf, LayoutDashboard, PiggyBank, FileDown } from "lucide-react";
 
@@ -37,8 +42,23 @@ const cardHeight: Record<AuthMode, number> = {
 function AuthPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const isDesktop = useIsDesktop();
   const [direction, setDirection] = useState(0);
+
+  const sessionReason = searchParams.get("reason");
+  const sessionMessage =
+    sessionReason === "inactivity"
+      ? "Aus Sicherheitsgründen wurdest du nach 10 Minuten Inaktivität abgemeldet."
+      : sessionReason === "session_expired"
+        ? "Deine Sitzung ist abgelaufen. Bitte melde dich erneut an."
+        : null;
+
+  useEffect(() => {
+    if (sessionReason) {
+      navigate(location.pathname, { replace: true });
+    }
+  }, []);
 
   const mode: AuthMode =
     location.pathname === "/register"
@@ -55,7 +75,7 @@ function AuthPage() {
   const brandingOnRight = mode === "register";
 
   return (
-    <div className="relative flex items-center justify-center min-h-screen w-screen bg-gradient-to-br from-blue-100 via-sky-50 to-teal-100 py-8 overflow-x-hidden">
+    <div className="relative flex flex-col items-center justify-center min-h-screen w-screen bg-gradient-to-br from-blue-100 via-sky-50 to-teal-100 py-8 overflow-x-hidden">
       <svg
         className="absolute inset-0 w-full h-full z-0"
         xmlns="http://www.w3.org/2000/svg"
@@ -106,6 +126,7 @@ function AuthPage() {
 
       <motion.div
         layout
+        initial={isDesktop ? { height: cardHeight[mode] } : {}}
         animate={isDesktop ? { height: cardHeight[mode] } : {}}
         transition={{ duration: 0.5, ease: "easeInOut" }}
         className="relative z-10 flex flex-col lg:flex-row rounded-2xl shadow-xl overflow-hidden w-[calc(100%-2rem)] max-w-sm lg:max-w-none lg:w-[900px]"
@@ -161,6 +182,13 @@ function AuthPage() {
             <Leaf size={22} className="text-white" />
             <span className="text-xl font-bold text-white">Arbor</span>
           </div>
+          {sessionMessage && (
+            <div className="w-full px-8 mb-4">
+              <div className="bg-amber-50 border border-amber-300 text-amber-800 text-sm rounded-lg px-4 py-3">
+                {sessionMessage}
+              </div>
+            </div>
+          )}
           <AnimatePresence mode="wait" custom={direction}>
             {mode === "login" && (
               <motion.div
@@ -207,6 +235,25 @@ function AuthPage() {
           </AnimatePresence>
         </motion.div>
       </motion.div>
+
+      {/* Footer */}
+      <div className="relative z-10 mt-6 flex items-center gap-3 text-xs text-slate-500/80">
+        <span>© 2026 Arbor</span>
+        <span className="text-slate-400/60">·</span>
+        <Link
+          to="/legal-notice"
+          className="hover:text-teal-600 transition-colors duration-150"
+        >
+          Impressum
+        </Link>
+        <span className="text-slate-400/60">·</span>
+        <Link
+          to="/privacy-policy"
+          className="hover:text-teal-600 transition-colors duration-150"
+        >
+          Datenschutz
+        </Link>
+      </div>
     </div>
   );
 }
