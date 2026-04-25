@@ -13,6 +13,9 @@ import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import AccountsPage from "./pages/AccountsPage";
 import BudgetsPage from "./pages/BudgetsPage";
 import SettingsPage from "./pages/SettingsPage";
+import ProfilePage from "./pages/ProfilePage";
+import CategoriesPage from "./pages/CategoriesPage";
+import NotificationsPage from "./pages/NotificationsPage";
 
 const splashShown = sessionStorage.getItem("splashShown");
 
@@ -37,6 +40,9 @@ function App() {
                 <Route path="/accounts" element={<AccountsPage />} />
                 <Route path="/budgets" element={<BudgetsPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
+                <Route path="/settings/profile" element={<ProfilePage />} />
+                <Route path="/settings/categories" element={<CategoriesPage />} />
+                <Route path="/settings/notifications" element={<NotificationsPage />} />
               </Route>
             </Route>
             <Route path="/login" element={<AuthPage />} />
