@@ -12,6 +12,7 @@ import LegalNoticePage from "./pages/LegalNoticePage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import AccountsPage from "./pages/AccountsPage";
 import BudgetsPage from "./pages/BudgetsPage";
+import SettingsPage from "./pages/SettingsPage";
 
 const splashShown = sessionStorage.getItem("splashShown");
 
@@ -35,6 +36,7 @@ function App() {
                 <Route path="/transactions" element={<TransactionsPage />} />
                 <Route path="/accounts" element={<AccountsPage />} />
                 <Route path="/budgets" element={<BudgetsPage />} />
+                <Route path="/settings" element={<SettingsPage />} />
               </Route>
             </Route>
             <Route path="/login" element={<AuthPage />} />
