@@ -177,7 +177,7 @@ function AuthPage() {
           transition={{ duration: 0.5, ease: "easeInOut" }}
           className={`w-full lg:w-1/2 bg-white flex flex-col items-center justify-center pb-10 lg:py-0 overflow-hidden ${brandingOnRight ? "order-1" : "order-2"}`}
         >
-          {/* Logo-Header — nur auf Mobile/Tablet */}
+          {/* Logo header — mobile/tablet only */}
           <div className="flex lg:hidden w-full items-center justify-center gap-2 bg-gradient-to-br from-teal-500 to-teal-700 py-5 mb-8">
             <Leaf size={22} className="text-white" />
             <span className="text-xl font-bold text-white">Arbor</span>
