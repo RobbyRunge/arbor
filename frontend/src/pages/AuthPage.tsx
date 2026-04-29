@@ -47,12 +47,13 @@ function AuthPage() {
   const [direction, setDirection] = useState(0);
 
   const sessionReason = searchParams.get("reason");
-  const sessionMessage =
+  const [sessionMessage] = useState(
     sessionReason === "inactivity"
       ? "Aus Sicherheitsgründen wurdest du nach 10 Minuten Inaktivität abgemeldet."
       : sessionReason === "session_expired"
         ? "Deine Sitzung ist abgelaufen. Bitte melde dich erneut an."
-        : null;
+        : null,
+  );
 
   useEffect(() => {
     if (sessionReason) {
