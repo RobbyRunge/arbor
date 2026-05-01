@@ -14,7 +14,6 @@ class Category(models.Model):
         related_name="categories",
     )
     name = models.CharField(max_length=100)
-    icon = models.CharField(max_length=100, default="tag")
     color = models.CharField(max_length=7, default="#6366f1")  # hex color
     type = models.CharField(max_length=10, choices=Type.choices)
 

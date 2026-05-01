@@ -3,14 +3,12 @@ import api from "./axiosInstance";
 export interface Category {
   id: number;
   name: string;
-  icon: string;
   color: string;
   type: "income" | "expense";
 }
 
 export interface CategoryPayload {
   name: string;
-  icon: string;
   color: string;
   type: "income" | "expense";
 }

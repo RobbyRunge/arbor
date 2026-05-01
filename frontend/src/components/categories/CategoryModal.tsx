@@ -87,7 +87,6 @@ function CategoryModal({ category, onClose }: Props) {
 
     const payload: CategoryPayload = {
       name: name.trim(),
-      icon: "",
       color,
       type,
     };
