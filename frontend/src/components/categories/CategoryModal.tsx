@@ -34,7 +34,6 @@ function CategoryModal({ category, onClose }: Props) {
   const queryClient = useQueryClient();
 
   const [name, setName] = useState(category?.name ?? "");
-  const [icon, setIcon] = useState(category?.icon ?? "");
   const [type, setType] = useState<Category["type"]>(
     category?.type ?? "expense",
   );
@@ -88,7 +87,7 @@ function CategoryModal({ category, onClose }: Props) {
 
     const payload: CategoryPayload = {
       name: name.trim(),
-      icon: icon.trim(),
+      icon: "",
       color,
       type,
     };
@@ -127,20 +126,6 @@ function CategoryModal({ category, onClose }: Props) {
               placeholder="z.B. Lebensmittel"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
-            />
-          </div>
-
-          {/* Icon */}
-          <div>
-            <label className="block text-xs font-medium text-gray-500 mb-1">
-              Icon (Lucide-Name)
-            </label>
-            <input
-              type="text"
-              placeholder="z.B. shopping-cart"
-              value={icon}
-              onChange={(e) => setIcon(e.target.value)}
               className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
             />
           </div>
