@@ -159,6 +159,8 @@ CORS_ALLOWED_CREDENTIALS = True
 # ─── Email ────────────────────────────────────────────────────────────────────
 # Used for password reset. In development, emails are printed to the console.
 
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
+
 EMAIL_BACKEND = os.getenv(
     "EMAIL_BACKEND",
     "django.core.mail.backends.console.EmailBackend",

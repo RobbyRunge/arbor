@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckCircle } from "lucide-react";
+import { requestPasswordReset } from "../../api/auth";
 
 const schema = z.object({
   email: z.string().email("Ungültige E-Mail"),
@@ -13,6 +14,7 @@ type ForgotPasswordData = z.infer<typeof schema>;
 function ForgotPasswordForm({ onSwitch }: { onSwitch: () => void }) {
   const [isLoading, setIsLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
 
   const {
     register,
@@ -22,12 +24,17 @@ function ForgotPasswordForm({ onSwitch }: { onSwitch: () => void }) {
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = async (_data: ForgotPasswordData) => {
+  const onSubmit = async (data: ForgotPasswordData) => {
     setIsLoading(true);
-    // TODO: API-Call einbauen sobald Backend-Endpoint fertig ist
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    setIsLoading(false);
-    setSubmitted(true);
+    setServerError(null);
+    try {
+      await requestPasswordReset(data.email);
+      setSubmitted(true);
+    } catch {
+      setServerError("Fehler beim Senden. Bitte versuche es erneut.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (submitted) {
@@ -68,6 +75,10 @@ function ForgotPasswordForm({ onSwitch }: { onSwitch: () => void }) {
           <p className="text-red-500 text-sm">{errors.email.message}</p>
         )}
       </div>
+
+      {serverError && (
+        <p className="text-red-500 text-sm mb-4">{serverError}</p>
+      )}
 
       <button
         type="submit"

@@ -10,9 +10,8 @@ import { Leaf, LayoutDashboard, PiggyBank, FileDown } from "lucide-react";
 
 import LoginForm from "../components/auth/LoginForm";
 import RegisterForm from "../components/auth/RegisterForm";
-import ForgotPasswordForm from "../components/auth/ForgotPasswordForm";
 
-type AuthMode = "login" | "register" | "forgot-password";
+type AuthMode = "login" | "register";
 
 function useIsDesktop() {
   const [isDesktop, setIsDesktop] = useState(
@@ -36,7 +35,6 @@ const formVariants = {
 const cardHeight: Record<AuthMode, number> = {
   login: 580,
   register: 680,
-  "forgot-password": 460,
 };
 
 function AuthPage() {
@@ -62,11 +60,7 @@ function AuthPage() {
   }, []);
 
   const mode: AuthMode =
-    location.pathname === "/register"
-      ? "register"
-      : location.pathname === "/forgot-password"
-        ? "forgot-password"
-        : "login";
+    location.pathname === "/register" ? "register" : "login";
 
   const switchTo = (next: AuthMode) => {
     setDirection(next === "login" ? -1 : 1);
@@ -203,7 +197,7 @@ function AuthPage() {
               >
                 <LoginForm
                   onSwitch={() => switchTo("register")}
-                  onForgotPassword={() => switchTo("forgot-password")}
+                  onForgotPassword={() => navigate("/forgot-password")}
                 />
               </motion.div>
             )}
@@ -218,19 +212,6 @@ function AuthPage() {
                 transition={{ duration: 0.25 }}
               >
                 <RegisterForm onSwitch={() => switchTo("login")} />
-              </motion.div>
-            )}
-            {mode === "forgot-password" && (
-              <motion.div
-                key="forgot-password"
-                custom={direction}
-                variants={formVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ duration: 0.25 }}
-              >
-                <ForgotPasswordForm onSwitch={() => switchTo("login")} />
               </motion.div>
             )}
           </AnimatePresence>

@@ -41,3 +41,18 @@ export async function changePassword(data: {
   const response = await axiosInstance.post("/api/auth/change-password/", data);
   return response.data;
 }
+
+export async function requestPasswordReset(email: string) {
+  const response = await axios.post("/api/auth/password-reset/", { email });
+  return response.data;
+}
+
+export async function confirmPasswordReset(data: {
+  uidb64: string;
+  token: string;
+  new_password: string;
+  new_password_confirm: string;
+}) {
+  const response = await axios.post("/api/auth/password-reset/confirm/", data);
+  return response.data;
+}
