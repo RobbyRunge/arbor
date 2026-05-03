@@ -3,6 +3,7 @@ import {
   useNavigate,
   useLocation,
   useSearchParams,
+  useParams,
   Link,
 } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -10,8 +11,11 @@ import { Leaf, LayoutDashboard, PiggyBank, FileDown } from "lucide-react";
 
 import LoginForm from "../components/auth/LoginForm";
 import RegisterForm from "../components/auth/RegisterForm";
+import ForgotPasswordForm from "../components/auth/ForgotPasswordForm";
+import ResetPasswordForm from "../components/auth/ResetPasswordForm";
 
-type AuthMode = "login" | "register";
+type AuthMode = "login" | "register" | "forgot-password" | "reset-password";
+type SwitchableMode = "login" | "register" | "forgot-password";
 
 function useIsDesktop() {
   const [isDesktop, setIsDesktop] = useState(
@@ -35,12 +39,15 @@ const formVariants = {
 const cardHeight: Record<AuthMode, number> = {
   login: 580,
   register: 680,
+  "forgot-password": 460,
+  "reset-password": 520,
 };
 
 function AuthPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
+  const { uidb64, token } = useParams<{ uidb64?: string; token?: string }>();
   const isDesktop = useIsDesktop();
   const [direction, setDirection] = useState(0);
 
@@ -59,10 +66,15 @@ function AuthPage() {
     }
   }, []);
 
-  const mode: AuthMode =
-    location.pathname === "/register" ? "register" : "login";
+  const mode: AuthMode = location.pathname.startsWith("/reset-password")
+    ? "reset-password"
+    : location.pathname === "/register"
+      ? "register"
+      : location.pathname === "/forgot-password"
+        ? "forgot-password"
+        : "login";
 
-  const switchTo = (next: AuthMode) => {
+  const switchTo = (next: SwitchableMode) => {
     setDirection(next === "login" ? -1 : 1);
     navigate(`/${next}`);
   };
@@ -177,7 +189,7 @@ function AuthPage() {
             <Leaf size={22} className="text-white" />
             <span className="text-xl font-bold text-white">Arbor</span>
           </div>
-          {sessionMessage && (
+          {sessionMessage && mode === "login" && (
             <div className="w-full px-8 mb-4">
               <div className="bg-amber-50 border border-amber-300 text-amber-800 text-sm rounded-lg px-4 py-3">
                 {sessionMessage}
@@ -197,7 +209,7 @@ function AuthPage() {
               >
                 <LoginForm
                   onSwitch={() => switchTo("register")}
-                  onForgotPassword={() => navigate("/forgot-password")}
+                  onForgotPassword={() => switchTo("forgot-password")}
                 />
               </motion.div>
             )}
@@ -212,6 +224,36 @@ function AuthPage() {
                 transition={{ duration: 0.25 }}
               >
                 <RegisterForm onSwitch={() => switchTo("login")} />
+              </motion.div>
+            )}
+            {mode === "forgot-password" && (
+              <motion.div
+                key="forgot-password"
+                custom={direction}
+                variants={formVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{ duration: 0.25 }}
+              >
+                <ForgotPasswordForm onSwitch={() => switchTo("login")} />
+              </motion.div>
+            )}
+            {mode === "reset-password" && uidb64 && token && (
+              <motion.div
+                key="reset-password"
+                custom={direction}
+                variants={formVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{ duration: 0.25 }}
+              >
+                <ResetPasswordForm
+                  uidb64={uidb64}
+                  token={token}
+                  onSwitch={() => switchTo("login")}
+                />
               </motion.div>
             )}
           </AnimatePresence>
