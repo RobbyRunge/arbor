@@ -5,6 +5,7 @@ import {
   ArrowLeftRight,
   Wallet,
   PiggyBank,
+  Settings,
   X,
   LogOut,
 } from "lucide-react";
@@ -95,6 +96,20 @@ function Sidebar({ onClose }: { onClose?: () => void }) {
         </NavLink>
       </nav>
       <div className="mt-auto">
+        <NavLink
+          onClick={onClose}
+          to="/settings"
+          className={({ isActive }) =>
+            `flex items-center gap-3 py-2 px-3 rounded-lg ${
+              isActive
+                ? "bg-teal-50 text-teal-600 font-semibold"
+                : "text-gray-500 hover:text-gray-800"
+            }`
+          }
+        >
+          <Settings size={20} />
+          Einstellungen
+        </NavLink>
         <button
           onClick={handleLogout}
           className="flex items-center gap-3 py-2 px-3 rounded-lg w-full hover:bg-red-50 transition-colors group"

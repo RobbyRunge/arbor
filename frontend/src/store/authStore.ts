@@ -13,6 +13,7 @@ interface AuthState {
   isLoading: boolean;
   checkAuth: () => Promise<void>;
   logout: () => Promise<void>;
+  updateUser: (data: Partial<User>) => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -31,5 +32,10 @@ export const useAuthStore = create<AuthState>((set) => ({
   logout: async () => {
     await axios.post("/api/auth/logout/", {}, { withCredentials: true });
     set({ user: null, isLoading: true });
+  },
+  updateUser: (data) => {
+    set((state) => ({
+      user: state.user ? { ...state.user, ...data } : null,
+    }));
   },
 }));

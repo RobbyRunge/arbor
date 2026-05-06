@@ -109,7 +109,7 @@ function TransactionModal({ onClose, transaction }: Props) {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Typ-Toggle */}
+          {/* Type toggle */}
           <div className="flex rounded-xl overflow-hidden border border-gray-200">
             <button
               type="button"

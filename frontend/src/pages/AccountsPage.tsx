@@ -31,7 +31,9 @@ const typeLabels: Record<string, string> = {
 
 function AccountsPage() {
   const [showModal, setShowModal] = useState(false);
-  const [editingAccount, setEditingAccount] = useState<Account | undefined>(undefined);
+  const [editingAccount, setEditingAccount] = useState<Account | undefined>(
+    undefined,
+  );
 
   const { data: accounts } = useQuery({
     queryKey: ["accounts"],
@@ -76,9 +78,12 @@ function AccountsPage() {
               onClick={() => openEdit(account)}
               className="bg-white rounded-2xl shadow p-6 relative group cursor-pointer md:cursor-default transition-shadow hover:shadow-md"
             >
-              {/* Edit-Button (nur Desktop) */}
+              {/* Edit button (desktop only) */}
               <button
-                onClick={(e) => { e.stopPropagation(); openEdit(account); }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  openEdit(account);
+                }}
                 className="absolute top-4 right-4 text-gray-300 hover:text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity hidden md:flex"
               >
                 <Pencil size={15} />
