@@ -11,12 +11,17 @@ cleanup() {
 }
 trap cleanup SIGINT SIGTERM
 
-echo "Checking Podman storage..."
-podman system check --repair
-
 echo "Starting containers..."
 cd "$ARBOR_DIR"
-podman-compose up -d
+if command -v podman-compose &>/dev/null; then
+    podman system check --repair
+    podman-compose up -d
+elif command -v docker &>/dev/null; then
+    docker compose up -d
+else
+    echo "Error: neither podman-compose nor docker found"
+    exit 1
+fi
 
 echo "Starting Django dev server..."
 source "$VENV"
