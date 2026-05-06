@@ -3,9 +3,20 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
+from django.core.mail import send_mail
+from django.conf import settings
 
 from apps.users.models import User
-from .serializers import RegisterSerializer, UserSerializer, ChangePasswordSerializer
+from .serializers import (
+    RegisterSerializer,
+    UserSerializer,
+    ChangePasswordSerializer,
+    PasswordResetRequestSerializer,
+    PasswordResetConfirmSerializer,
+)
 
 
 class LoginView(APIView):
@@ -128,4 +139,66 @@ class ChangePasswordView(APIView):
         serializer.save()
         return Response(
             {"detail": "Password changed successfully."}, status=status.HTTP_200_OK
+        )
+
+
+class PasswordResetRequestView(APIView):
+    """
+    POST /api/auth/password-reset/
+    Sends a password reset email if the given address is registered.
+    Always returns 200 to avoid leaking whether an email exists.
+    """
+
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = PasswordResetRequestSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        email = serializer.validated_data["email"]
+        try:
+            user = User.objects.get(email=email)
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = PasswordResetTokenGenerator().make_token(user)
+            reset_url = f"{settings.FRONTEND_URL}/reset-password/{uid}/{token}/"
+            try:
+                send_mail(
+                    subject="Passwort zurücksetzen – Arbor",
+                    message=(
+                        f"Hallo {user.first_name},\n\n"
+                        f"klicke auf den folgenden Link, um dein Passwort zurückzusetzen:\n\n"
+                        f"{reset_url}\n\n"
+                        f"Der Link ist 24 Stunden gültig.\n\n"
+                        f"Falls du diese Anfrage nicht gestellt hast, kannst du diese E-Mail ignorieren."
+                    ),
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[email],
+                    fail_silently=False,
+                )
+            except Exception:
+                return Response(
+                    {"detail": "E-Mail konnte nicht gesendet werden. Bitte versuche es später erneut."},
+                    status=status.HTTP_503_SERVICE_UNAVAILABLE,
+                )
+        except User.DoesNotExist:
+            pass
+        return Response(
+            {"detail": "Falls ein Konto mit dieser Adresse existiert, erhältst du in Kürze eine E-Mail."},
+            status=status.HTTP_200_OK,
+        )
+
+
+class PasswordResetConfirmView(APIView):
+    """
+    POST /api/auth/password-reset/confirm/
+    Validates the uid + token and sets the new password.
+    """
+
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = PasswordResetConfirmSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(
+            {"detail": "Passwort erfolgreich geändert."}, status=status.HTTP_200_OK
         )

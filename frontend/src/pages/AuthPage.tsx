@@ -3,6 +3,7 @@ import {
   useNavigate,
   useLocation,
   useSearchParams,
+  useParams,
   Link,
 } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -11,8 +12,10 @@ import { Leaf, LayoutDashboard, PiggyBank, FileDown } from "lucide-react";
 import LoginForm from "../components/auth/LoginForm";
 import RegisterForm from "../components/auth/RegisterForm";
 import ForgotPasswordForm from "../components/auth/ForgotPasswordForm";
+import ResetPasswordForm from "../components/auth/ResetPasswordForm";
 
-type AuthMode = "login" | "register" | "forgot-password";
+type AuthMode = "login" | "register" | "forgot-password" | "reset-password";
+type SwitchableMode = "login" | "register" | "forgot-password";
 
 function useIsDesktop() {
   const [isDesktop, setIsDesktop] = useState(
@@ -37,22 +40,25 @@ const cardHeight: Record<AuthMode, number> = {
   login: 580,
   register: 680,
   "forgot-password": 460,
+  "reset-password": 520,
 };
 
 function AuthPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
+  const { uidb64, token } = useParams<{ uidb64?: string; token?: string }>();
   const isDesktop = useIsDesktop();
   const [direction, setDirection] = useState(0);
 
   const sessionReason = searchParams.get("reason");
-  const sessionMessage =
+  const [sessionMessage] = useState(
     sessionReason === "inactivity"
       ? "Aus Sicherheitsgründen wurdest du nach 10 Minuten Inaktivität abgemeldet."
       : sessionReason === "session_expired"
         ? "Deine Sitzung ist abgelaufen. Bitte melde dich erneut an."
-        : null;
+        : null,
+  );
 
   useEffect(() => {
     if (sessionReason) {
@@ -60,14 +66,15 @@ function AuthPage() {
     }
   }, []);
 
-  const mode: AuthMode =
-    location.pathname === "/register"
+  const mode: AuthMode = location.pathname.startsWith("/reset-password")
+    ? "reset-password"
+    : location.pathname === "/register"
       ? "register"
       : location.pathname === "/forgot-password"
         ? "forgot-password"
         : "login";
 
-  const switchTo = (next: AuthMode) => {
+  const switchTo = (next: SwitchableMode) => {
     setDirection(next === "login" ? -1 : 1);
     navigate(`/${next}`);
   };
@@ -177,12 +184,12 @@ function AuthPage() {
           transition={{ duration: 0.5, ease: "easeInOut" }}
           className={`w-full lg:w-1/2 bg-white flex flex-col items-center justify-center pb-10 lg:py-0 overflow-hidden ${brandingOnRight ? "order-1" : "order-2"}`}
         >
-          {/* Logo-Header — nur auf Mobile/Tablet */}
+          {/* Logo header — mobile/tablet only */}
           <div className="flex lg:hidden w-full items-center justify-center gap-2 bg-gradient-to-br from-teal-500 to-teal-700 py-5 mb-8">
             <Leaf size={22} className="text-white" />
             <span className="text-xl font-bold text-white">Arbor</span>
           </div>
-          {sessionMessage && (
+          {sessionMessage && mode === "login" && (
             <div className="w-full px-8 mb-4">
               <div className="bg-amber-50 border border-amber-300 text-amber-800 text-sm rounded-lg px-4 py-3">
                 {sessionMessage}
@@ -230,6 +237,23 @@ function AuthPage() {
                 transition={{ duration: 0.25 }}
               >
                 <ForgotPasswordForm onSwitch={() => switchTo("login")} />
+              </motion.div>
+            )}
+            {mode === "reset-password" && uidb64 && token && (
+              <motion.div
+                key="reset-password"
+                custom={direction}
+                variants={formVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{ duration: 0.25 }}
+              >
+                <ResetPasswordForm
+                  uidb64={uidb64}
+                  token={token}
+                  onSwitch={() => switchTo("login")}
+                />
               </motion.div>
             )}
           </AnimatePresence>
