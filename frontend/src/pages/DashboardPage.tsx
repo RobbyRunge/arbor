@@ -9,7 +9,6 @@ import {
   PieChart,
   Pie,
   Cell,
-  Legend,
 } from "recharts";
 import {
   TrendingUp,
@@ -84,7 +83,7 @@ function DashboardPage() {
 
   const { data: transactions = [], isLoading: txLoading } = useQuery({
     queryKey: ["transactions"],
-    queryFn: fetchTransactions,
+    queryFn: () => fetchTransactions({ month: "", type: "", category: "", search: "" }),
   });
 
   const isLoading = accountsLoading || txLoading;
@@ -207,8 +206,8 @@ function DashboardPage() {
                 <XAxis dataKey="tag" tick={{ fontSize: 12 }} />
                 <YAxis tick={{ fontSize: 12 }} tickFormatter={(v) => `${v}€`} />
                 <Tooltip
-                  formatter={(value: number, name: string) => [
-                    formatCurrency(value),
+                  formatter={(value, name) => [
+                    formatCurrency(Number(value)),
                     name === "einnahmen" ? "Einnahmen" : "Ausgaben",
                   ]}
                 />
@@ -239,32 +238,48 @@ function DashboardPage() {
               Keine Ausgaben diesen Monat.
             </p>
           ) : (
-            <ResponsiveContainer width="100%" height={220}>
-              <PieChart>
-                <Pie
-                  data={donutData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={55}
-                  outerRadius={85}
-                  paddingAngle={3}
-                  dataKey="value"
-                >
-                  {donutData.map((_, index) => (
-                    <Cell
-                      key={index}
-                      fill={DONUT_COLORS[index % DONUT_COLORS.length]}
+            <>
+              <ResponsiveContainer width="100%" height={220}>
+                <PieChart>
+                  <Pie
+                    data={donutData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={55}
+                    outerRadius={85}
+                    paddingAngle={3}
+                    dataKey="value"
+                  >
+                    {donutData.map((_, index) => (
+                      <Cell
+                        key={index}
+                        fill={DONUT_COLORS[index % DONUT_COLORS.length]}
+                      />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    formatter={(value) => formatCurrency(Number(value))}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="flex flex-wrap gap-x-4 gap-y-1.5 mt-4">
+                {donutData.map((item, index) => (
+                  <div
+                    key={item.name}
+                    className="flex items-center gap-1.5 text-xs text-gray-600"
+                  >
+                    <span
+                      className="w-2.5 h-2.5 rounded-sm flex-shrink-0"
+                      style={{
+                        backgroundColor:
+                          DONUT_COLORS[index % DONUT_COLORS.length],
+                      }}
                     />
-                  ))}
-                </Pie>
-                <Tooltip formatter={(value: number) => formatCurrency(value)} />
-                <Legend
-                  formatter={(value) => (
-                    <span className="text-xs text-gray-600">{value}</span>
-                  )}
-                />
-              </PieChart>
-            </ResponsiveContainer>
+                    {item.name}
+                  </div>
+                ))}
+              </div>
+            </>
           )}
         </div>
       </div>
