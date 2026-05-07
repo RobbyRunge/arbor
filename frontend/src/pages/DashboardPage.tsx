@@ -83,7 +83,8 @@ function DashboardPage() {
 
   const { data: transactions = [], isLoading: txLoading } = useQuery({
     queryKey: ["transactions"],
-    queryFn: () => fetchTransactions({ month: "", type: "", category: "", search: "" }),
+    queryFn: () =>
+      fetchTransactions({ month: "", type: "", category: "", search: "" }),
   });
 
   const isLoading = accountsLoading || txLoading;
@@ -201,8 +202,8 @@ function DashboardPage() {
               Keine Transaktionen diesen Monat.
             </p>
           ) : (
-            <ResponsiveContainer width="100%" height={220}>
-              <BarChart data={dailyData} barCategoryGap="30%">
+            <ResponsiveContainer width="100%" height={290}>
+              <BarChart data={dailyData} barCategoryGap="20%" barSize={8}>
                 <XAxis dataKey="tag" tick={{ fontSize: 12 }} />
                 <YAxis tick={{ fontSize: 12 }} tickFormatter={(v) => `${v}€`} />
                 <Tooltip
@@ -245,7 +246,7 @@ function DashboardPage() {
                     data={donutData}
                     cx="50%"
                     cy="50%"
-                    innerRadius={55}
+                    innerRadius={50}
                     outerRadius={85}
                     paddingAngle={3}
                     dataKey="value"
