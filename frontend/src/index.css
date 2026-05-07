@@ -11,20 +11,26 @@ html, body, #root {
   height: 100%;
 }
 
-/* App scrollbar */
+/* App scrollbar — desktop only */
 .app-scroll::-webkit-scrollbar {
-  width: 6px;
+  width: 0;
 }
 
-.app-scroll::-webkit-scrollbar-track {
-  background: transparent;
-}
+@media (min-width: 768px) {
+  .app-scroll::-webkit-scrollbar {
+    width: 6px;
+  }
 
-.app-scroll::-webkit-scrollbar-thumb {
-  background: rgba(20, 184, 166, 0.35);
-  border-radius: 99px;
-}
+  .app-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
 
-.app-scroll::-webkit-scrollbar-thumb:hover {
-  background: rgba(20, 184, 166, 0.65);
+  .app-scroll::-webkit-scrollbar-thumb {
+    background: rgba(20, 184, 166, 0.35);
+    border-radius: 99px;
+  }
+
+  .app-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(20, 184, 166, 0.65);
+  }
 }
