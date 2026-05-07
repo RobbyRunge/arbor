@@ -10,7 +10,7 @@ function AppLayout() {
   useInactivity();
 
   return (
-    <div className="relative flex items-start justify-center h-screen bg-gradient-to-br from-blue-100 via-sky-50 to-teal-100 p-4 md:p-8 overflow-hidden">
+    <div className="relative flex items-start justify-center h-screen bg-gradient-to-br from-blue-100 via-sky-50 to-teal-100 md:p-8 overflow-hidden">
       {/* Background polygons */}
       <svg
         className="absolute inset-0 w-full h-full z-0"
@@ -76,7 +76,7 @@ function AppLayout() {
       </div>
 
       {/* App card */}
-      <div className="relative z-10 flex w-full max-w-[1400px] h-full rounded-2xl shadow-xl overflow-hidden">
+      <div className="relative z-10 flex w-full max-w-[1400px] h-full md:rounded-2xl md:shadow-xl overflow-hidden">
         {/* Desktop sidebar — always in flow, never fixed */}
         <div className="hidden md:flex">
           <Sidebar />

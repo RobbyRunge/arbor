@@ -19,10 +19,10 @@ type SwitchableMode = "login" | "register" | "forgot-password";
 
 function useIsDesktop() {
   const [isDesktop, setIsDesktop] = useState(
-    () => window.matchMedia("(min-width: 1024px)").matches,
+    () => window.matchMedia("(min-width: 768px)").matches,
   );
   useEffect(() => {
-    const mq = window.matchMedia("(min-width: 1024px)");
+    const mq = window.matchMedia("(min-width: 768px)");
     const handler = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
     mq.addEventListener("change", handler);
     return () => mq.removeEventListener("change", handler);
@@ -82,7 +82,7 @@ function AuthPage() {
   const brandingOnRight = mode === "register";
 
   return (
-    <div className="relative flex flex-col items-center justify-center min-h-screen w-screen bg-gradient-to-br from-blue-100 via-sky-50 to-teal-100 py-8 overflow-x-hidden">
+    <div className="relative flex flex-col items-center justify-center min-h-screen w-screen bg-gradient-to-br from-blue-100 via-sky-50 to-teal-100 md:py-8 overflow-x-hidden">
       <svg
         className="absolute inset-0 w-full h-full z-0"
         xmlns="http://www.w3.org/2000/svg"
@@ -136,13 +136,13 @@ function AuthPage() {
         initial={isDesktop ? { height: cardHeight[mode] } : {}}
         animate={isDesktop ? { height: cardHeight[mode] } : {}}
         transition={{ duration: 0.5, ease: "easeInOut" }}
-        className="relative z-10 flex flex-col lg:flex-row rounded-2xl shadow-xl overflow-hidden w-[calc(100%-2rem)] max-w-sm lg:max-w-none lg:w-[900px]"
+        className="relative z-10 flex flex-col md:flex-row md:rounded-2xl md:shadow-xl overflow-hidden w-full min-h-screen md:min-h-0 md:w-[calc(100%-2rem)] md:max-w-[900px]"
       >
         {/* Branding panel — only on desktop */}
         <motion.div
           layout
           transition={{ duration: 0.5, ease: "easeInOut" }}
-          className={`hidden lg:flex w-1/2 bg-gradient-to-br from-teal-500 to-teal-700 flex-col items-center justify-center text-center px-10 ${brandingOnRight ? "order-2" : "order-1"}`}
+          className={`hidden md:flex w-1/2 bg-gradient-to-br from-teal-500 to-teal-700 flex-col items-center justify-center text-center px-10 ${brandingOnRight ? "order-2" : "order-1"}`}
         >
           <Leaf size={48} className="text-white" />
           <h1 className="text-4xl font-bold text-white mt-4">Arbor</h1>
@@ -182,86 +182,109 @@ function AuthPage() {
         <motion.div
           layout
           transition={{ duration: 0.5, ease: "easeInOut" }}
-          className={`w-full lg:w-1/2 bg-white flex flex-col items-center justify-center pb-10 lg:py-0 overflow-hidden ${brandingOnRight ? "order-1" : "order-2"}`}
+          className={`w-full flex-1 md:flex-none md:w-1/2 bg-white flex flex-col items-center justify-start md:justify-center overflow-hidden ${brandingOnRight ? "order-1" : "order-2"}`}
         >
           {/* Logo header — mobile/tablet only */}
-          <div className="flex lg:hidden w-full items-center justify-center gap-2 bg-gradient-to-br from-teal-500 to-teal-700 py-5 mb-8">
+          <div className="flex md:hidden w-full items-center justify-center gap-2 bg-gradient-to-br from-teal-500 to-teal-700 py-5">
             <Leaf size={22} className="text-white" />
             <span className="text-xl font-bold text-white">Arbor</span>
           </div>
-          {sessionMessage && mode === "login" && (
-            <div className="w-full px-8 mb-4">
-              <div className="bg-amber-50 border border-amber-300 text-amber-800 text-sm rounded-lg px-4 py-3">
-                {sessionMessage}
+
+          {/* Form content — fills remaining space on mobile */}
+          <div className="flex-1 md:flex-none flex flex-col items-center justify-center w-full py-8 md:py-0">
+            {sessionMessage && mode === "login" && (
+              <div className="w-full px-8 mb-4">
+                <div className="bg-amber-50 border border-amber-300 text-amber-800 text-sm rounded-lg px-4 py-3">
+                  {sessionMessage}
+                </div>
               </div>
-            </div>
-          )}
-          <AnimatePresence mode="wait" custom={direction}>
-            {mode === "login" && (
-              <motion.div
-                key="login"
-                custom={direction}
-                variants={formVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ duration: 0.25 }}
-              >
-                <LoginForm
-                  onSwitch={() => switchTo("register")}
-                  onForgotPassword={() => switchTo("forgot-password")}
-                />
-              </motion.div>
             )}
-            {mode === "register" && (
-              <motion.div
-                key="register"
-                custom={direction}
-                variants={formVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ duration: 0.25 }}
-              >
-                <RegisterForm onSwitch={() => switchTo("login")} />
-              </motion.div>
-            )}
-            {mode === "forgot-password" && (
-              <motion.div
-                key="forgot-password"
-                custom={direction}
-                variants={formVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ duration: 0.25 }}
-              >
-                <ForgotPasswordForm onSwitch={() => switchTo("login")} />
-              </motion.div>
-            )}
-            {mode === "reset-password" && uidb64 && token && (
-              <motion.div
-                key="reset-password"
-                custom={direction}
-                variants={formVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ duration: 0.25 }}
-              >
-                <ResetPasswordForm
-                  uidb64={uidb64}
-                  token={token}
-                  onSwitch={() => switchTo("login")}
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
+            <AnimatePresence mode="wait" custom={direction}>
+              {mode === "login" && (
+                <motion.div
+                  key="login"
+                  custom={direction}
+                  variants={formVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{ duration: 0.25 }}
+                >
+                  <LoginForm
+                    onSwitch={() => switchTo("register")}
+                    onForgotPassword={() => switchTo("forgot-password")}
+                  />
+                </motion.div>
+              )}
+              {mode === "register" && (
+                <motion.div
+                  key="register"
+                  custom={direction}
+                  variants={formVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{ duration: 0.25 }}
+                >
+                  <RegisterForm onSwitch={() => switchTo("login")} />
+                </motion.div>
+              )}
+              {mode === "forgot-password" && (
+                <motion.div
+                  key="forgot-password"
+                  custom={direction}
+                  variants={formVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{ duration: 0.25 }}
+                >
+                  <ForgotPasswordForm onSwitch={() => switchTo("login")} />
+                </motion.div>
+              )}
+              {mode === "reset-password" && uidb64 && token && (
+                <motion.div
+                  key="reset-password"
+                  custom={direction}
+                  variants={formVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{ duration: 0.25 }}
+                >
+                  <ResetPasswordForm
+                    uidb64={uidb64}
+                    token={token}
+                    onSwitch={() => switchTo("login")}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Footer — mobile only */}
+          <div className="flex md:hidden items-center gap-3 text-xs text-slate-500/80 pb-6">
+            <span>© 2026 Arbor</span>
+            <span className="text-slate-400/60">·</span>
+            <Link
+              to="/legal-notice"
+              className="hover:text-teal-600 transition-colors duration-150"
+            >
+              Impressum
+            </Link>
+            <span className="text-slate-400/60">·</span>
+            <Link
+              to="/privacy-policy"
+              className="hover:text-teal-600 transition-colors duration-150"
+            >
+              Datenschutz
+            </Link>
+          </div>
         </motion.div>
       </motion.div>
 
       {/* Footer */}
-      <div className="relative z-10 mt-6 flex items-center gap-3 text-xs text-slate-500/80">
+      <div className="hidden md:flex relative z-10 mt-6 items-center gap-3 text-xs text-slate-500/80">
         <span>© 2026 Arbor</span>
         <span className="text-slate-400/60">·</span>
         <Link

@@ -5,7 +5,7 @@ function PrivacyPolicyPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="relative flex flex-col items-center justify-center min-h-screen w-screen bg-gradient-to-br from-blue-100 via-sky-50 to-teal-100 py-12 px-4">
+    <div className="relative flex flex-col items-center justify-center min-h-screen w-screen bg-gradient-to-br from-blue-100 via-sky-50 to-teal-100 md:py-12 md:px-4">
       <svg
         className="absolute inset-0 w-full h-full z-0"
         xmlns="http://www.w3.org/2000/svg"
@@ -25,7 +25,7 @@ function PrivacyPolicyPage() {
         />
       </svg>
 
-      <div className="relative z-10 w-full max-w-xl bg-white rounded-2xl shadow-xl p-6 sm:p-8">
+      <div className="relative z-10 w-full min-h-screen flex flex-col md:min-h-0 md:max-w-xl bg-white md:rounded-2xl md:shadow-xl p-6 md:p-8">
         {/* Header */}
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-6 pb-5 border-b border-slate-100">
           <div className="flex items-center gap-2 text-teal-600">
@@ -99,9 +99,14 @@ function PrivacyPolicyPage() {
           <ArrowLeft size={16} />
           Zurück
         </button>
+
+        {/* Footer — mobile only */}
+        <p className="flex md:hidden mt-auto pt-8 justify-center text-xs text-slate-500/70">
+          © 2026 Arbor
+        </p>
       </div>
 
-      <p className="relative z-10 mt-5 text-xs text-slate-500/70">
+      <p className="hidden md:block relative z-10 mt-5 text-xs text-slate-500/70">
         © 2026 Arbor
       </p>
     </div>
