@@ -6,7 +6,8 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
-from django.core.mail import send_mail
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
 from django.conf import settings
 
 from apps.users.models import User
@@ -161,28 +162,41 @@ class PasswordResetRequestView(APIView):
             token = PasswordResetTokenGenerator().make_token(user)
             reset_url = f"{settings.FRONTEND_URL}/reset-password/{uid}/{token}/"
             try:
-                send_mail(
-                    subject="Passwort zurücksetzen – Arbor",
-                    message=(
-                        f"Hallo {user.first_name},\n\n"
-                        f"klicke auf den folgenden Link, um dein Passwort zurückzusetzen:\n\n"
-                        f"{reset_url}\n\n"
-                        f"Der Link ist 24 Stunden gültig.\n\n"
-                        f"Falls du diese Anfrage nicht gestellt hast, kannst du diese E-Mail ignorieren."
-                    ),
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[email],
-                    fail_silently=False,
+                from datetime import date
+                context = {
+                    "first_name": user.first_name or user.email,
+                    "reset_url": reset_url,
+                    "year": date.today().year,
+                }
+                html_body = render_to_string("emails/password_reset.html", context)
+                plain_body = (
+                    f"Hallo {context['first_name']},\n\n"
+                    f"klicke auf den folgenden Link, um dein Passwort zurückzusetzen:\n\n"
+                    f"{reset_url}\n\n"
+                    f"Der Link ist 24 Stunden gültig.\n\n"
+                    f"Falls du diese Anfrage nicht gestellt hast, kannst du diese E-Mail ignorieren."
                 )
+                msg = EmailMultiAlternatives(
+                    subject="Passwort zurücksetzen – Arbor",
+                    body=plain_body,
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    to=[email],
+                )
+                msg.attach_alternative(html_body, "text/html")
+                msg.send(fail_silently=False)
             except Exception:
                 return Response(
-                    {"detail": "E-Mail konnte nicht gesendet werden. Bitte versuche es später erneut."},
+                    {
+                        "detail": "E-Mail konnte nicht gesendet werden. Bitte versuche es später erneut."
+                    },
                     status=status.HTTP_503_SERVICE_UNAVAILABLE,
                 )
         except User.DoesNotExist:
             pass
         return Response(
-            {"detail": "Falls ein Konto mit dieser Adresse existiert, erhältst du in Kürze eine E-Mail."},
+            {
+                "detail": "Falls ein Konto mit dieser Adresse existiert, erhältst du in Kürze eine E-Mail."
+            },
             status=status.HTTP_200_OK,
         )
 
