@@ -109,6 +109,35 @@ class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
 
+    def perform_create(self, serializer):
+        from datetime import date
+
+    user = serializer.save()
+    uid = urlsafe_base64_encode(force_bytes(user.pk))
+    token = PasswordResetTokenGenerator().make_token(user)
+    verification_url = f"{settings.FRONTEND_URL}/verify-email/{uid}/{token}/"
+    context = {
+        "first_name": user.first_name or user.email,
+        "verification_url": verification_url,
+        "year": date.today().year,
+    }
+    html_body = render_to_string("emails/verify_email.html", context)
+    plain_body = (
+        f"Hallo {context['first_name']},\n\n"
+        f"klicke auf den folgenden Link, um deine E-Mail-Adresse zu bestätigen:\n\n"
+        f"{verification_url}\n\n"
+        f"Der Link ist 24 Stunden gültig.\n\n"
+        f"Falls du diese Anfrage nicht gestellt hast, kannst du diese E-Mail ignorieren."
+    )
+    msg = EmailMultiAlternatives(
+        subject="E-Mail-Adresse bestätigen – Arbor",
+        body=plain_body,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        to=[user.email],
+    )
+    msg.attach_alternative(html_body, "text/html")
+    msg.send(fail_silently=True)
+
 
 class MeView(generics.RetrieveUpdateAPIView):
     """
