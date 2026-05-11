@@ -4,8 +4,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.conf import settings
@@ -246,3 +246,30 @@ class PasswordResetConfirmView(APIView):
         return Response(
             {"detail": "Passwort erfolgreich geändert."}, status=status.HTTP_200_OK
         )
+
+
+class VerifyEmailView(APIView):
+    """
+    GET /api/auth/verify-email/<uidb64>/<token>/
+    Validates the token and marks the user's email as verified.
+    """
+
+    permission_classes = [AllowAny]
+
+    def get(self, request, uidb64, token):
+        try:
+            uid = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            return Response(
+                {"detail": "Ungültiger Verifizierungs-Link."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if not PasswordResetTokenGenerator().check_token(user, token):
+            return Response(
+                {"detail": "Verifizierungs-Link ist abgelaufen oder ungültig."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        user.is_verified = True
+        user.save()
+        return Response({"detail": "E-Mail-Adresse erfolgreich bestätigt."})
