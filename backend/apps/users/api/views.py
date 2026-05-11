@@ -32,6 +32,13 @@ class LoginView(APIView):
         serializer = TokenObtainPairSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
+        user = User.objects.get(email=request.data["email"])
+        if not user.is_verified:
+            return Response(
+                {"detail": "E-Mail-Adresse ist noch nicht bestätigt."},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
         response = Response({"detail": "Login erfolgreich."})
         response.set_cookie(
             "access_token",
