@@ -163,6 +163,7 @@ class PasswordResetRequestView(APIView):
             reset_url = f"{settings.FRONTEND_URL}/reset-password/{uid}/{token}/"
             try:
                 from datetime import date
+
                 context = {
                     "first_name": user.first_name or user.email,
                     "reset_url": reset_url,
