@@ -11,9 +11,6 @@ cleanup() {
 }
 trap cleanup SIGINT SIGTERM
 
-echo "Checking Podman storage..."
-podman system check --repair
-
 echo "Starting containers..."
 cd "$ARBOR_DIR"
 podman-compose up -d
