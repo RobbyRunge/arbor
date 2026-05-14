@@ -9,6 +9,7 @@ from apps.users.api.views import (
     ChangePasswordView,
     PasswordResetRequestView,
     PasswordResetConfirmView,
+    VerifyEmailView,
 )
 
 urlpatterns = [
@@ -20,4 +21,5 @@ urlpatterns = [
     path("change-password/", ChangePasswordView.as_view(), name="auth-change-password"),
     path("password-reset/", PasswordResetRequestView.as_view(), name="auth-password-reset"),
     path("password-reset/confirm/", PasswordResetConfirmView.as_view(), name="auth-password-reset-confirm"),
+    path("verify-email/<str:uidb64>/<str:token>/", VerifyEmailView.as_view(), name="auth-verify-email"),
 ]

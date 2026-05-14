@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { registerUser, loginUser } from "../../api/auth";
+import { registerUser } from "../../api/auth";
+import { Mail } from "lucide-react";
 
 const schema = z
   .object({
@@ -21,9 +21,9 @@ const schema = z
 type RegisterData = z.infer<typeof schema>;
 
 function RegisterForm({ onSwitch }: { onSwitch: () => void }) {
-  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
+  const [registeredEmail, setRegisteredEmail] = useState<string | null>(null);
 
   const {
     register,
@@ -40,8 +40,7 @@ function RegisterForm({ onSwitch }: { onSwitch: () => void }) {
 
     try {
       await registerUser(data);
-      await loginUser(data.email, data.password);
-      navigate("/");
+      setRegisteredEmail(data.email);
     } catch (err: any) {
       const fieldErrors = err?.response?.data;
       if (fieldErrors && typeof fieldErrors === "object") {
@@ -64,6 +63,32 @@ function RegisterForm({ onSwitch }: { onSwitch: () => void }) {
       setIsLoading(false);
     }
   };
+
+  if (registeredEmail) {
+    return (
+      <div className="w-[300px] flex flex-col items-center text-center">
+        <div className="bg-teal-50 border border-teal-200 rounded-full p-4 mb-4">
+          <Mail size={32} className="text-teal-600" />
+        </div>
+        <h2 className="text-2xl font-bold text-gray-800">E-Mail bestätigen</h2>
+        <p className="text-gray-500 mt-2 mb-1">
+          Wir haben eine Bestätigungs-E-Mail an
+        </p>
+        <p className="font-medium text-gray-700 mb-4">{registeredEmail}</p>
+        <p className="text-gray-500 text-sm mb-6">
+          Klicke auf den Link in der E-Mail, um dein Konto zu aktivieren. Der
+          Link ist 24 Stunden gültig.
+        </p>
+        <button
+          type="button"
+          onClick={onSwitch}
+          className="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2 rounded-lg transition-colors"
+        >
+          Zur Anmeldung
+        </button>
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="w-[300px]">

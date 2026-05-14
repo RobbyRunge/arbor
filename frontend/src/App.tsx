@@ -16,6 +16,7 @@ import SettingsPage from "./pages/SettingsPage";
 import ProfilePage from "./pages/ProfilePage";
 import CategoriesPage from "./pages/CategoriesPage";
 import NotificationsPage from "./pages/NotificationsPage";
+import VerifyEmailPage from "./pages/VerifyEmailPage";
 
 const splashShown = sessionStorage.getItem("splashShown");
 
@@ -51,6 +52,7 @@ function App() {
             <Route path="/reset-password/:uidb64/:token" element={<AuthPage />} />
             <Route path="/legal-notice" element={<LegalNoticePage />} />
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+            <Route path="/verify-email/:uidb64/:token" element={<VerifyEmailPage />} />
           </Routes>
         </TransitionProvider>
       </BrowserRouter>
