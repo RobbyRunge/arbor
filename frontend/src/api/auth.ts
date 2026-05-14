@@ -56,3 +56,8 @@ export async function confirmPasswordReset(data: {
   const response = await axios.post("/api/auth/password-reset/confirm/", data);
   return response.data;
 }
+
+export async function verifyEmail(uidb64: string, token: string) {
+  const response = await axios.get(`/api/auth/verify-email/${uidb64}/${token}/`);
+  return response.data;
+}
