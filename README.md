@@ -15,25 +15,31 @@ Arbor is a full-stack personal finance application built as a showcase project. 
 ### Implemented
 
 - User registration & login with JWT authentication
+- Email verification on registration (token-based, via email)
+- Password reset via email (request + confirm flow)
+- Logout with token invalidation
 - Custom user model (email-based login)
 - Default categories created automatically on registration
 - Account management with automatic balance recalculation
 - Full CRUD for transactions, accounts, categories, and budgets
 - Budget limit warnings via notifications
+- Dashboard with charts (income vs. expenses bar chart, expenses by category donut chart)
+- Transactions page with filters (month, type, search) grouped by calendar week
+- Budget progress bars with warning and over-budget states
+- Accounts, Categories, Notifications pages
+- Settings with profile management
+- Animated splash screen on first load
 - Responsive auth pages with animated panel transitions (Framer Motion)
+- Legal notice and privacy policy pages
+- Inactivity detection (auto-logout)
 
 ### Planned
 
-- Dashboard with charts (spending overview, income vs. expenses)
-- Transaction table with filters and search
-- Budget progress bars
 - PDF & CSV export (Celery + ReportLab/WeasyPrint)
 - CSV import for transactions
-- Password reset via email
 - Dark / Light mode
-- Notification center
 - CI/CD with GitHub Actions
-- Deployment to Google Cloud or Heroku
+- Deployment
 - Error tracking with Sentry
 
 ---
@@ -69,6 +75,7 @@ Arbor is a full-stack personal finance application built as a showcase project. 
 | React Hook Form  | 7       |
 | Zod              | 4       |
 | Axios            | 1       |
+| Lucide React     | 1       |
 
 ### Infrastructure
 
@@ -83,7 +90,7 @@ Arbor is a full-stack personal finance application built as a showcase project. 
 arbor/
 ├── backend/
 │   ├── apps/
-│   │   ├── users/          # Custom user model, auth endpoints
+│   │   ├── users/          # Custom user model, auth endpoints, email templates
 │   │   ├── accounts/       # Account management
 │   │   ├── categories/     # Transaction categories
 │   │   ├── transactions/   # Income & expense transactions
@@ -95,9 +102,13 @@ arbor/
 ├── frontend/
 │   ├── src/
 │   │   ├── api/            # Axios API functions
-│   │   ├── components/     # Reusable UI components
+│   │   ├── components/     # Reusable UI components (auth, layout, modals)
+│   │   ├── context/        # React context (e.g. page transitions)
+│   │   ├── hooks/          # Custom hooks (e.g. inactivity detection)
 │   │   ├── pages/          # Page-level components
-│   │   └── ...
+│   │   ├── store/          # Zustand stores
+│   │   ├── types/          # TypeScript type definitions
+│   │   └── utils/          # Utility functions
 │   ├── package.json
 │   └── vite.config.ts
 └── docker-compose.yml      # PostgreSQL & Redis
@@ -130,13 +141,35 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Create a `.env` file in `backend/`:
+Create a `.env` file in `backend/` (see `.env.example`):
 
 ```env
 SECRET_KEY=your-secret-key
 DEBUG=True
-DATABASE_URL=postgres://postgres:postgres@localhost:5432/arbor
+ALLOWED_HOSTS=localhost,127.0.0.1
+
+DB_NAME=arbor
+DB_USER=postgres
+DB_PASSWORD=your-password
+DB_HOST=localhost
+DB_PORT=5432
+
 REDIS_URL=redis://localhost:6379/0
+
+FRONTEND_URL=http://localhost:5173
+CORS_ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
+
+# Email — console backend for local dev (prints to terminal)
+EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
+DEFAULT_FROM_EMAIL=noreply@arbor.app
+
+# Email — SMTP (uncomment for real email delivery)
+# EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+# EMAIL_HOST=smtp.example.com
+# EMAIL_PORT=587
+# EMAIL_USE_TLS=True
+# EMAIL_HOST_USER=your@email.com
+# EMAIL_HOST_PASSWORD=your-password
 ```
 
 Run migrations and start the server:
@@ -169,19 +202,29 @@ celery -A config worker -l info
 
 ## API Overview
 
-| Method         | Endpoint                     | Description                 |
-| -------------- | ---------------------------- | --------------------------- |
-| POST           | `/api/auth/register/`        | Register a new user         |
-| POST           | `/api/auth/login/`           | Login → returns JWT tokens  |
-| POST           | `/api/auth/token/refresh/`   | Refresh access token        |
-| GET/PATCH      | `/api/auth/me/`              | Get or update user profile  |
-| POST           | `/api/auth/change-password/` | Change password             |
-| GET/POST       | `/api/accounts/`             | List or create accounts     |
-| GET/PUT/DELETE | `/api/accounts/<id>/`        | Manage a specific account   |
-| GET/POST       | `/api/categories/`           | List or create categories   |
-| GET/POST       | `/api/transactions/`         | List or create transactions |
-| GET/POST       | `/api/budgets/`              | List or create budgets      |
-| GET            | `/api/notifications/`        | List notifications          |
+| Method         | Endpoint                                    | Description                       |
+| -------------- | ------------------------------------------- | --------------------------------- |
+| POST           | `/api/auth/register/`                       | Register a new user               |
+| POST           | `/api/auth/login/`                          | Login → returns JWT tokens        |
+| POST           | `/api/auth/token/refresh/`                  | Refresh access token              |
+| POST           | `/api/auth/logout/`                         | Logout (blacklist refresh token)  |
+| GET/PATCH      | `/api/auth/me/`                             | Get or update user profile        |
+| POST           | `/api/auth/change-password/`                | Change password                   |
+| POST           | `/api/auth/password-reset/`                 | Request password reset email      |
+| POST           | `/api/auth/password-reset/confirm/`         | Confirm password reset with token |
+| GET            | `/api/auth/verify-email/<uidb64>/<token>/`  | Verify email address              |
+| GET/POST       | `/api/accounts/`                            | List or create accounts           |
+| GET/PUT/DELETE | `/api/accounts/<id>/`                       | Manage a specific account         |
+| GET/POST       | `/api/categories/`                          | List or create categories         |
+| GET/POST       | `/api/transactions/`                        | List or create transactions       |
+| GET/POST       | `/api/budgets/`                             | List or create budgets            |
+| GET            | `/api/notifications/`                       | List notifications                |
+
+---
+
+## Status
+
+Last updated: May 2026
 
 ---
 
